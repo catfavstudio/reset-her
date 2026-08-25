@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Reset Her — 90 Day Identity Reset</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUmVzZXQgSGVyIiwic2hvcnRfbmFtZSI6IlJlc2V0IEhlciIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSJ9">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --radius-sm:10px; --radius-md:16px; --radius-lg:24px; --radius-xl:32px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
+  --shadow-soft:0 8px 24px -8px rgba(0,0,0,0.12);
+  --shadow-lift:0 16px 40px -12px rgba(0,0,0,0.18);
+  --font-display:'Playfair Display', Georgia, serif;
+  --font-body:'Montserrat', -apple-system, sans-serif;
+}
+
+/* PINK — light */
+[data-theme="pink-light"]{
+  --bg:#FFF6F8; --bg-alt:#FFEDF1; --surface:#FFFFFF; --surface-2:#FFF0F4;
+  --text:#3D2530; --text-soft:#7A5A66; --border:#F5D9E1;
+  --accent:#E88AA3; --accent-2:#F4B8C7; --accent-deep:#C85E7C;
+  --on-accent:#FFFFFF; --success:#8FBF9F; --warn:#E3A857;
+}
+[data-theme="pink-dark"]{
+  --bg:#241318; --bg-alt:#2E181F; --surface:#2E181F; --surface-2:#3A1F27;
+  --text:#F7E4E9; --text-soft:#D4AAB6; --border:#4A2530;
+  --accent:#F0A6BB; --accent-2:#D97A97; --accent-deep:#F7C6D4;
+  --on-accent:#2A1218; --success:#9BCBAA; --warn:#EFC077;
+}
+/* PURPLE — light */
+[data-theme="purple-light"]{
+  --bg:#F9F5FE; --bg-alt:#F1E8FC; --surface:#FFFFFF; --surface-2:#F4EDFC;
+  --text:#2E2440; --text-soft:#6B5C82; --border:#E4D4F5;
+  --accent:#A688D6; --accent-2:#C9B3EA; --accent-deep:#7E5CB8;
+  --on-accent:#FFFFFF; --success:#8FBF9F; --warn:#E3A857;
+}
+[data-theme="purple-dark"]{
+  --bg:#1C1628; --bg-alt:#241A33; --surface:#241A33; --surface-2:#2E2140;
+  --text:#EDE3FA; --text-soft:#C0AEDA; --border:#3A2A4F;
+  --accent:#C3A6EC; --accent-2:#9A78CC; --accent-deep:#DCC7F5;
+  --on-accent:#241628; --success:#9BCBAA; --warn:#EFC077;
+}
+/* YELLOW — light */
+[data-theme="yellow-light"]{
+  --bg:#FFFBF0; --bg-alt:#FFF3D6; --surface:#FFFFFF; --surface-2:#FFF6E0;
+  --text:#3D3320; --text-soft:#8A7752; --border:#F5E5B8;
+  --accent:#E8B84B; --accent-2:#F4D480; --accent-deep:#C99420;
+  --on-accent:#3D3320; --success:#8FBF9F; --warn:#E3A857;
+}
+[data-theme="yellow-dark"]{
+  --bg:#241F12; --bg-alt:#2E2818; --surface:#2E2818; --surface-2:#3A3220;
+  --text:#F9EFD4; --text-soft:#D6C393; --border:#4A3F26;
+  --accent:#F0C765; --accent-2:#D9A73A; --accent-deep:#F7DA8C;
+  --on-accent:#241F12; --success:#9BCBAA; --warn:#EFC077;
+}
+/* BLUE — light */
+[data-theme="blue-light"]{
+  --bg:#F0F9FC; --bg-alt:#DFF1F8; --surface:#FFFFFF; --surface-2:#E9F5FA;
+  --text:#1E323D; --text-soft:#5A7986; --border:#CDE8F1;
+  --accent:#5FADD1; --accent-2:#9BD1E7; --accent-deep:#3C87AB;
+  --on-accent:#FFFFFF; --success:#8FBF9F; --warn:#E3A857;
+}
+[data-theme="blue-dark"]{
+  --bg:#111E26; --bg-alt:#16262F; --surface:#16262F; --surface-2:#1C303B;
+  --text:#DFF1F8; --text-soft:#A9C7D3; --border:#274451;
+  --accent:#7FC3E3; --accent-2:#4E96BC; --accent-deep:#A7D8EE;
+  --on-accent:#0E1A21; --success:#9BCBAA; --warn:#EFC077;
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0; height:100%;}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font-body);
+  font-size:16px; line-height:1.55; transition:background .3s ease, color .3s ease;
+  overscroll-behavior-y:none;
+}
+h1,h2,h3{font-family:var(--font-display); font-weight:700; margin:0 0 var(--space-2);}
+p{margin:0 0 var(--space-3);}
+button{font-family:var(--font-body); cursor:pointer;}
+:focus-visible{outline:3px solid var(--accent-deep); outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important;} }
+
+.app{max-width:520px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:var(--space-7);}
+.hidden{display:none !important;}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:14px 22px; border-radius:999px; border:none; font-weight:700; font-size:15px;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--accent-deep); color:var(--on-accent); box-shadow:var(--shadow-soft);}
+.btn-primary:hover{box-shadow:var(--shadow-lift);}
+.btn-ghost{background:transparent; color:var(--accent-deep); border:2px solid var(--border);}
+.btn-block{width:100%;}
+.btn-sm{padding:8px 16px; font-size:13px;}
+
+/* ============ ONBOARDING ============ */
+#onboarding{
+  position:fixed; inset:0; background:var(--bg); z-index:100;
+  display:flex; flex-direction:column; overflow-y:auto;
+}
+.ob-screen{
+  flex:1; display:none; flex-direction:column; align-items:center; justify-content:center;
+  padding:var(--space-6) var(--space-5); text-align:center; min-height:100vh;
+}
+.ob-screen.active{display:flex; animation:fadeUp .5s ease;}
+@keyframes fadeUp{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+.bloom-mark{width:72px; height:72px; margin-bottom:var(--space-4);}
+.ob-title{font-size:30px; margin-bottom:var(--space-3);}
+.ob-sub{color:var(--text-soft); font-size:15px; max-width:340px; margin-bottom:var(--space-5);}
+.ob-input{
+  width:100%; max-width:320px; padding:16px 18px; border-radius:var(--radius-md);
+  border:2px solid var(--border); background:var(--surface); color:var(--text);
+  font-size:16px; font-family:var(--font-body); margin-bottom:var(--space-4); text-align:center;
+}
+.ob-input:focus{border-color:var(--accent-deep);}
+.theme-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:var(--space-5); width:100%; max-width:340px;}
+.theme-swatch{
+  aspect-ratio:1; border-radius:16px; border:3px solid transparent; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; position:relative;
+}
+.theme-swatch.selected{border-color:var(--text);}
+.theme-swatch svg{width:60%; height:60%;}
+.mode-toggle{display:flex; gap:8px; margin-bottom:var(--space-5);}
+.mode-btn{padding:8px 20px; border-radius:999px; border:2px solid var(--border); background:var(--surface); color:var(--text); font-weight:600; font-size:13px;}
+.mode-btn.selected{background:var(--accent-deep); color:var(--on-accent); border-color:var(--accent-deep);}
+.ob-dots{display:flex; gap:6px; margin-top:var(--space-5);}
+.ob-dot{width:6px; height:6px; border-radius:50%; background:var(--border);}
+.ob-dot.on{background:var(--accent-deep);}
+.ob-nav{display:flex; gap:10px; width:100%; max-width:320px; margin-top:var(--space-4);}
+.ob-textarea{
+  width:100%; max-width:340px; min-height:140px; padding:16px; border-radius:var(--radius-md);
+  border:2px solid var(--border); background:var(--surface); color:var(--text);
+  font-family:var(--font-body); font-size:15px; resize:vertical;
+}
+.ob-icon-big{font-size:56px; margin-bottom:var(--space-3);}
+
+/* ============ LOCK SCREEN ============ */
+#lockOverlay{
+  position:fixed; inset:0; background:var(--bg); z-index:90; display:flex; flex-direction:column;
+  align-items:center; justify-content:flex-end; padding:var(--space-5);
+}
+.lock-sheet{
+  width:100%; max-width:480px; background:var(--surface); border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:var(--space-6) var(--space-5); box-shadow:0 -20px 50px rgba(0,0,0,.15); text-align:center;
+}
+.preview-banner{
+  position:fixed; top:0; left:0; right:0; z-index:80; background:var(--accent-deep); color:var(--on-accent);
+  text-align:center; padding:10px; font-size:13px; font-weight:700; letter-spacing:.3px;
+}
+.lock-key-input{
+  width:100%; padding:16px; border-radius:var(--radius-md); border:2px solid var(--border);
+  background:var(--bg); color:var(--text); font-size:16px; text-align:center; letter-spacing:1px;
+  margin-bottom:var(--space-3); text-transform:uppercase;
+}
+.lock-error{color:#C85E5E; font-size:13px; margin-bottom:var(--space-2); min-height:18px;}
+.lock-note{font-size:12px; color:var(--text-soft); margin-top:var(--space-4);}
+
+/* ============ HEADER / BACKUP BANNER ============ */
+.backup-banner{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:var(--surface-2); border-bottom:1px solid var(--border);
+  padding:10px var(--space-4); font-size:12.5px; color:var(--text-soft); position:sticky; top:0; z-index:20;
+}
+.backup-banner b{color:var(--text);}
+.backup-banner button{background:var(--accent-deep); color:var(--on-accent); border:none; border-radius:999px; padding:7px 14px; font-size:12px; font-weight:700; white-space:nowrap;}
+
+/* ============ TOP HERO ============ */
+.hero{padding:var(--space-6) var(--space-5) var(--space-5);}
+.hero-eyebrow{font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent-deep); font-weight:700; margin-bottom:6px;}
+.hero-name{font-size:26px; margin-bottom:var(--space-1);}
+.hero-day{color:var(--text-soft); font-size:14px; margin-bottom:var(--space-4);}
+.phase-track{background:var(--surface-2); border-radius:999px; height:10px; overflow:hidden; margin-bottom:8px;}
+.phase-fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-deep)); border-radius:999px; transition:width .6s ease;}
+.phase-label{display:flex; justify-content:space-between; font-size:12px; color:var(--text-soft);}
+
+/* ============ GRID ============ */
+.section-title{padding:0 var(--space-5); font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--text-soft); font-weight:700; margin:var(--space-5) 0 var(--space-3);}
+.card-grid{display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3); padding:0 var(--space-5);}
+.feature-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:var(--space-4); display:flex; flex-direction:column; gap:6px; text-align:left;
+  box-shadow:var(--shadow-soft); transition:transform .15s ease;
+}
+.feature-card:active{transform:scale(.97);}
+.feature-card .fc-icon{font-size:26px;}
+.feature-card .fc-title{font-weight:700; font-size:14.5px;}
+.feature-card .fc-sub{font-size:12px; color:var(--text-soft);}
+.feature-card.wide{grid-column:1/-1;}
+
+/* ============ MODAL PANELS ============ */
+.panel-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:60; display:flex;
+  align-items:flex-end; justify-content:center;
+}
+.panel{
+  width:100%; max-width:520px; max-height:92vh; overflow-y:auto; background:var(--bg);
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0; padding:var(--space-5); animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{transform:translateY(30px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+.panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-4);}
+.panel-close{background:var(--surface-2); border:none; width:36px; height:36px; border-radius:50%; font-size:16px; color:var(--text);}
+
+/* ============ HABIT TRACKER ============ */
+.habit-row{display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:10px;}
+.habit-check{width:28px; height:28px; border-radius:50%; border:2px solid var(--accent); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; background:transparent;}
+.habit-check.done{background:var(--accent-deep); border-color:var(--accent-deep); color:var(--on-accent);}
+.habit-name{flex:1; font-size:14.5px; font-weight:600;}
+.habit-streak{font-size:11px; color:var(--text-soft);}
+.habit-del{background:none; border:none; color:var(--text-soft); font-size:16px; padding:4px;}
+.add-habit-row{display:flex; gap:8px; margin-top:var(--space-3);}
+.add-habit-row input{flex:1; padding:12px; border-radius:var(--radius-md); border:2px solid var(--border); background:var(--surface); color:var(--text); font-family:var(--font-body);}
+
+/* ============ PROMPTS ============ */
+.prompt-card{background:var(--surface); border-radius:var(--radius-lg); padding:var(--space-5); margin-bottom:var(--space-4); border:1px solid var(--border);}
+.prompt-label{font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--accent-deep); font-weight:700; margin-bottom:6px;}
+.prompt-text{font-size:16px; font-weight:600; margin-bottom:var(--space-3);}
+.prompt-textarea{width:100%; min-height:90px; padding:12px; border-radius:var(--radius-md); border:2px solid var(--border); background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:14px; resize:vertical;}
+.affirmation-box{background:var(--accent); color:var(--on-accent); border-radius:var(--radius-lg); padding:var(--space-5); text-align:center; font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:var(--space-4);}
+
+/* ============ MOOD ============ */
+.mood-row{display:flex; justify-content:space-between; gap:6px; margin-bottom:var(--space-4);}
+.mood-opt{flex:1; aspect-ratio:1; border-radius:16px; border:2px solid var(--border); background:var(--surface); font-size:24px; display:flex; align-items:center; justify-content:center;}
+.mood-opt.selected{border-color:var(--accent-deep); background:var(--surface-2);}
+.mood-history{display:flex; gap:4px; margin-top:var(--space-3); flex-wrap:wrap;}
+.mood-dot{width:14px; height:14px; border-radius:4px;}
+
+/* ============ HELP ============ */
+.help-item{margin-bottom:var(--space-4); padding-bottom:var(--space-4); border-bottom:1px solid var(--border);}
+.help-item:last-child{border-bottom:none;}
+.help-item h3{font-size:15px; margin-bottom:4px;}
+.help-item p{font-size:13.5px; color:var(--text-soft); margin-bottom:0;}
+
+/* ============ SETTINGS ============ */
+.settings-row{display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border);}
+.settings-row:last-child{border-bottom:none;}
+.settings-label{font-size:14px; font-weight:600;}
+.settings-sub{font-size:12px; color:var(--text-soft);}
+
+/* ============ LOCK SCRIM (see feature, can't use it) ============ */
+.panel-content-wrap{position:relative;}
+.lock-scrim{
+  position:absolute; inset:0; pointer-events:auto; z-index:5;
+  display:flex; align-items:flex-end; justify-content:center; padding:var(--space-4);
+  background:linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(0,0,0,0.38) 100%);
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
+}
+.lock-scrim-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:var(--space-4) var(--space-5); text-align:center; box-shadow:var(--shadow-lift);
+  max-width:340px; width:100%;
+}
+.lock-scrim-card .lsc-icon{font-size:26px; margin-bottom:4px;}
+.lock-scrim-card .lsc-title{font-weight:700; font-size:14.5px; margin-bottom:4px;}
+.lock-scrim-card .lsc-sub{font-size:12.5px; color:var(--text-soft); margin-bottom:var(--space-3);}
+</style>
+</head>
+<body data-theme="pink-light">
+<div class="app">
+
+  <!-- ============ ONBOARDING ============ -->
+  <div id="onboarding">
+
+    <div class="ob-screen active" data-step="0">
+      <svg class="bloom-mark" viewBox="0 0 100 100" fill="none"><path d="M50 20 C60 20 68 28 68 38 C68 48 60 56 50 56 C40 56 32 48 32 38 C32 28 40 20 50 20 Z" fill="var(--accent)"/><path d="M50 44 C60 44 68 52 68 62 C68 72 60 80 50 80 C40 80 32 72 32 62 C32 52 40 44 50 44 Z" fill="var(--accent-deep)"/></svg>
+      <h1 class="ob-title">Reset Her</h1>
+      <p class="ob-sub">A 90 day journey to build your life and become the woman you are becoming.</p>
+      <div class="ob-nav"><button class="btn btn-primary btn-block" onclick="obGo(1)">Start</button></div>
+    </div>
+
+    <div class="ob-screen" data-step="1">
+      <div class="ob-icon-big">👋</div>
+      <h2 class="ob-title" style="font-size:24px;">What should we call you?</h2>
+      <p class="ob-sub">This is your journey. Let's make it feel like yours.</p>
+      <input type="text" id="obName" class="ob-input" placeholder="Your name" maxlength="30">
+      <div class="ob-nav">
+        <button class="btn btn-ghost" onclick="obGo(0)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="obSaveName()">Next</button>
+      </div>
+    </div>
+
+    <div class="ob-screen" data-step="2">
+      <div class="ob-icon-big">🎨</div>
+      <h2 class="ob-title" style="font-size:24px;">Pick your colors</h2>
+      <p class="ob-sub">Choose a color family. You can change this any time in Settings.</p>
+      <div class="theme-grid" id="themeGrid"></div>
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-btn selected" data-mode="light" onclick="setMode('light')">Light</button>
+        <button class="mode-btn" data-mode="dark" onclick="setMode('dark')">Dark</button>
+      </div>
+      <div class="ob-nav">
+        <button class="btn btn-ghost" onclick="obGo(1)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="obGo(3)">Next</button>
+      </div>
+    </div>
+
+    <div class="ob-screen" data-step="3">
+      <div class="ob-icon-big">🌱</div>
+      <h2 class="ob-title" style="font-size:24px;">How this works</h2>
+      <p class="ob-sub">Every day for 90 days, you will do three small things: a mindset prompt, a habit check in, and a mood log. Small steps, done again and again, are what change a life.</p>
+      <div class="ob-dots"><span class="ob-dot on"></span><span class="ob-dot"></span><span class="ob-dot"></span></div>
+      <div class="ob-nav" style="margin-top:var(--space-5);">
+        <button class="btn btn-ghost" onclick="obGo(2)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="obGo(4)">Next</button>
+      </div>
+    </div>
+
+    <div class="ob-screen" data-step="4">
+      <div class="ob-icon-big">🌸</div>
+      <h2 class="ob-title" style="font-size:24px;">Three phases, one you</h2>
+      <p class="ob-sub"><b>Days 1 to 30:</b> Build. You lay down new habits.<br><br><b>Days 31 to 60:</b> Rewire. You work on your mindset.<br><br><b>Days 61 to 90:</b> Grow. You step into who you have become.</p>
+      <div class="ob-dots"><span class="ob-dot"></span><span class="ob-dot on"></span><span class="ob-dot"></span></div>
+      <div class="ob-nav" style="margin-top:var(--space-5);">
+        <button class="btn btn-ghost" onclick="obGo(3)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="obGo(5)">Next</button>
+      </div>
+    </div>
+
+    <div class="ob-screen" data-step="5">
+      <div class="ob-icon-big">✨</div>
+      <h2 class="ob-title" style="font-size:24px;">Your data stays yours</h2>
+      <p class="ob-sub">Everything you write stays only on this device. Nothing is sent anywhere. This also means you must back up your data yourself, so you never lose it. We will remind you often.</p>
+      <div class="ob-dots"><span class="ob-dot"></span><span class="ob-dot"></span><span class="ob-dot on"></span></div>
+      <div class="ob-nav" style="margin-top:var(--space-5);">
+        <button class="btn btn-ghost" onclick="obGo(4)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="obGo(6)">Next</button>
+      </div>
+    </div>
+
+    <div class="ob-screen" data-step="6">
+      <div class="ob-icon-big">💌</div>
+      <h2 class="ob-title" style="font-size:24px;">Write to your future self</h2>
+      <p class="ob-sub">Before Day 1 starts, write a little about who you are right now, and who you want to become. You will read this again on Day 90.</p>
+      <textarea id="obFutureHer" class="ob-textarea" placeholder="Right now I feel... In 90 days I want to be someone who..."></textarea>
+      <div class="ob-nav">
+        <button class="btn btn-ghost" onclick="obGo(5)">Back</button>
+        <button class="btn btn-primary btn-block" onclick="obFinish()">Begin Day 1</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ LOCK / PREVIEW ============ -->
+  <div id="previewBanner" class="preview-banner hidden">🔒 Preview mode — unlock to save your progress and use every feature</div>
+  <div id="lockOverlay" class="panel-overlay hidden">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Unlock Full Version</h2><button class="panel-close" onclick="closeLockOverlay()">✕</button></div>
+      <div class="ob-icon-big">🔓</div>
+      <p class="ob-sub" style="margin:0 auto var(--space-4); max-width:100%;">Enter your activation code to unlock instant lifetime access and free updates.</p>
+      <input type="text" id="unlockInput" class="lock-key-input" placeholder="Enter activation code">
+      <div class="lock-error" id="lockError"></div>
+      <button class="btn btn-primary btn-block" onclick="tryUnlock()">Unlock Full Version</button>
+      <p class="lock-note">Don't have a code yet? <a href="#" id="buyLink" style="color:var(--accent-deep); font-weight:700;">Get Reset Her on Gumroad</a></p>
+    </div>
+  </div>
+
+  <!-- ============ MAIN APP ============ -->
+  <div id="mainApp" class="hidden">
+    <div class="backup-banner">
+      <span>💾 <b>Back up your data</b> before you close this app.</span>
+      <button onclick="exportData()">Back up now</button>
+    </div>
+
+    <div class="hero">
+      <div class="hero-eyebrow" id="phaseLabel">Phase 1 · Build</div>
+      <h1 class="hero-name" id="greetName">Welcome back</h1>
+      <div class="hero-day" id="dayLabel">Day 1 of 90</div>
+      <div class="phase-track"><div class="phase-fill" id="phaseFill" style="width:1%;"></div></div>
+      <div class="phase-label"><span>Day 1</span><span>Day 90</span></div>
+    </div>
+
+    <div class="section-title">Today</div>
+    <div class="card-grid">
+      <button class="feature-card" onclick="openPanel('promptPanel')">
+        <div class="fc-icon">📝</div>
+        <div class="fc-title">Daily Prompt</div>
+        <div class="fc-sub">Mindset + affirmation</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('moodPanel')">
+        <div class="fc-icon">🌤️</div>
+        <div class="fc-title">Mood Check In</div>
+        <div class="fc-sub">How are you today?</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('habitPanel')">
+        <div class="fc-icon">✅</div>
+        <div class="fc-title">Habit Tracker</div>
+        <div class="fc-sub" id="habitSummary">0 of 0 done</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('journalPanel')">
+        <div class="fc-icon">🪞</div>
+        <div class="fc-title">Identity Journal</div>
+        <div class="fc-sub">Who I'm becoming</div>
+      </button>
+      <button class="feature-card wide" onclick="openPanel('challengePanel')">
+        <div class="fc-icon">🌸</div>
+        <div class="fc-title">Identity Reset Challenge</div>
+        <div class="fc-sub" id="challengeSummary">Build your own 90 day challenge</div>
+      </button>
+    </div>
+
+    <div class="section-title">Your Journey</div>
+    <div class="card-grid">
+      <button class="feature-card" onclick="openPanel('futureHerPanel')">
+        <div class="fc-icon">💌</div>
+        <div class="fc-title">Future Her</div>
+        <div class="fc-sub">Your Day 1 letter</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('gratitudePanel')">
+        <div class="fc-icon">🙏</div>
+        <div class="fc-title">Gratitude Log</div>
+        <div class="fc-sub">Three good things</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('visionPanel')">
+        <div class="fc-icon">🎯</div>
+        <div class="fc-title">Vision Board</div>
+        <div class="fc-sub">Goals you're building toward</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('selfcarePanel')">
+        <div class="fc-icon">💗</div>
+        <div class="fc-title">Self Care Checklist</div>
+        <div class="fc-sub">Daily care check-in</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('reviewPanel')">
+        <div class="fc-icon">📅</div>
+        <div class="fc-title">Weekly Review</div>
+        <div class="fc-sub">Look back, reset forward</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('milestonePanel')">
+        <div class="fc-icon">🏆</div>
+        <div class="fc-title">Milestones</div>
+        <div class="fc-sub" id="milestoneSummary">0 unlocked</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('helpPanel')">
+        <div class="fc-icon">📖</div>
+        <div class="fc-title">Help Guide</div>
+        <div class="fc-sub">How to use this app</div>
+      </button>
+      <button class="feature-card" onclick="openPanel('settingsPanel')">
+        <div class="fc-icon">⚙️</div>
+        <div class="fc-title">Settings</div>
+        <div class="fc-sub">Theme + backup</div>
+      </button>
+    </div>
+
+    <div style="height:40px;"></div>
+  </div>
+
+  <!-- ============ PANELS ============ -->
+
+  <div class="panel-overlay hidden" id="overlay-promptPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Daily Prompt</h2><button class="panel-close" onclick="closePanel('promptPanel')">✕</button></div>
+      <div class="affirmation-box" id="affirmationText">I am becoming stronger every day.</div>
+      <div class="prompt-card">
+        <div class="prompt-label">Mindset Reframe</div>
+        <div class="prompt-text" id="cbtPrompt">What is one thought that held you back today?</div>
+        <textarea class="prompt-textarea" id="cbtAnswer" placeholder="Write your thought here, then write a kinder, truer thought next to it."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveJournalEntry()">Save today's answer</button>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-moodPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Mood Check In</h2><button class="panel-close" onclick="closePanel('moodPanel')">✕</button></div>
+      <p style="color:var(--text-soft); font-size:13.5px;">How do you feel right now? Pick one.</p>
+      <div class="mood-row" id="moodRow">
+        <button class="mood-opt" data-mood="1" onclick="setMood(1)">😞</button>
+        <button class="mood-opt" data-mood="2" onclick="setMood(2)">😕</button>
+        <button class="mood-opt" data-mood="3" onclick="setMood(3)">😐</button>
+        <button class="mood-opt" data-mood="4" onclick="setMood(4)">🙂</button>
+        <button class="mood-opt" data-mood="5" onclick="setMood(5)">😄</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-soft); margin-top:var(--space-4);">Last 14 days</p>
+      <div class="mood-history" id="moodHistory"></div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-habitPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Habit Tracker</h2><button class="panel-close" onclick="closePanel('habitPanel')">✕</button></div>
+      <div id="habitList"></div>
+      <div class="add-habit-row">
+        <input type="text" id="newHabitInput" placeholder="Add a new habit">
+        <button class="btn btn-primary btn-sm" onclick="addHabit()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-journalPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Identity Journal</h2><button class="panel-close" onclick="closePanel('journalPanel')">✕</button></div>
+      <div class="prompt-card">
+        <div class="prompt-label">Today's Identity Statement</div>
+        <div class="prompt-text" id="identityStatement">I am becoming a woman who keeps her promises to herself.</div>
+        <textarea class="prompt-textarea" id="identityAnswer" placeholder="Write why this matters to you, or how you lived it today."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveIdentityEntry()">Save today's entry</button>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-futureHerPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Future Her</h2><button class="panel-close" onclick="closePanel('futureHerPanel')">✕</button></div>
+      <p style="font-size:13.5px; color:var(--text-soft);">This is the letter you wrote on Day 1. It stays locked until Day 90, then you can compare it to who you have become.</p>
+      <div class="prompt-card" id="futureHerLocked">
+        <div class="prompt-label">Sealed until Day 90</div>
+        <div class="prompt-text">🔒 Your letter is safe. Come back on Day 90 to read it.</div>
+      </div>
+      <div class="prompt-card hidden" id="futureHerReveal">
+        <div class="prompt-label">Your Day 1 Letter</div>
+        <div class="prompt-text" id="futureHerText"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-challengePanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Identity Reset Challenge</h2><button class="panel-close" onclick="closePanel('challengePanel')">✕</button></div>
+      <p style="font-size:13.5px; color:var(--text-soft);">Pick the challenges that fit your life. Do them each day you choose. This is your own reset, built by you.</p>
+      <div id="challengeCategoryList"></div>
+      <div style="margin-top:var(--space-4); padding-top:var(--space-4); border-top:1px solid var(--border);">
+        <div class="prompt-label">My Chosen Challenges Today</div>
+        <div id="chosenChallengeList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-gratitudePanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Gratitude Log</h2><button class="panel-close" onclick="closePanel('gratitudePanel')">✕</button></div>
+      <p style="font-size:13.5px; color:var(--text-soft);">Write three good things from today. They can be small.</p>
+      <input type="text" class="ob-input" style="margin-bottom:8px;" id="gratitude1" placeholder="Good thing one">
+      <input type="text" class="ob-input" style="margin-bottom:8px;" id="gratitude2" placeholder="Good thing two">
+      <input type="text" class="ob-input" style="margin-bottom:var(--space-3);" id="gratitude3" placeholder="Good thing three">
+      <button class="btn btn-primary btn-block" onclick="saveGratitude()">Save today's list</button>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-visionPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Vision Board</h2><button class="panel-close" onclick="closePanel('visionPanel')">✕</button></div>
+      <p style="font-size:13.5px; color:var(--text-soft);">Write down what you want your life to look like. Add as many as you want.</p>
+      <div id="visionList"></div>
+      <div class="add-habit-row">
+        <input type="text" id="newVisionInput" placeholder="Add a goal or vision">
+        <button class="btn btn-primary btn-sm" onclick="addVision()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-selfcarePanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Self Care Checklist</h2><button class="panel-close" onclick="closePanel('selfcarePanel')">✕</button></div>
+      <p style="font-size:13.5px; color:var(--text-soft);">Check off what you did for yourself today.</p>
+      <div id="selfcareList"></div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-reviewPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Weekly Review</h2><button class="panel-close" onclick="closePanel('reviewPanel')">✕</button></div>
+      <p style="font-size:13.5px; color:var(--text-soft);">Take a few minutes to look back at your week.</p>
+      <div class="prompt-card">
+        <div class="prompt-label">What went well this week?</div>
+        <textarea class="prompt-textarea" id="reviewWell" placeholder="Write here"></textarea>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-label">What was hard this week?</div>
+        <textarea class="prompt-textarea" id="reviewHard" placeholder="Write here"></textarea>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-label">What will I do differently next week?</div>
+        <textarea class="prompt-textarea" id="reviewNext" placeholder="Write here"></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveReview()">Save this week's review</button>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-milestonePanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Milestones</h2><button class="panel-close" onclick="closePanel('milestonePanel')">✕</button></div>
+      <p style="font-size:13.5px; color:var(--text-soft);">You unlock a milestone every 10 days you show up in this app.</p>
+      <div id="milestoneList"></div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-helpPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Help Guide</h2><button class="panel-close" onclick="closePanel('helpPanel')">✕</button></div>
+      <div class="help-item"><h3>💌 Daily Prompt</h3><p>Every day you get one affirmation and one mindset question. Write your answer in the box. This helps you notice your thoughts and slowly build new, kinder ones.</p></div>
+      <div class="help-item"><h3>🌤️ Mood Check In</h3><p>Tap the face that matches how you feel. Do this once a day. Over time you will see your mood history and start to notice patterns.</p></div>
+      <div class="help-item"><h3>✅ Habit Tracker</h3><p>Add habits you want to build. Tap the circle each day you complete them. Your streak counts how many days in a row you have kept a habit going.</p></div>
+      <div class="help-item"><h3>🪞 Identity Journal</h3><p>Each day you get a new "I am becoming" statement. Write about it. This is how you practice becoming the woman you wrote about in your Future Her letter.</p></div>
+      <div class="help-item"><h3>💌 Future Her</h3><p>The letter you wrote before Day 1 is locked away safely. On Day 90 it unlocks so you can read it and see how far you have come.</p></div>
+      <div class="help-item"><h3>💾 Backing Up Your Data</h3><p>Everything you write is saved only on this device, in this browser. It is never sent to us or anyone else. This means if you clear your browser data or switch devices, your progress can be lost. Tap "Back up now" often. It saves a small file to your device. Keep that file safe. You can use "Restore" in Settings to bring your data back if anything happens.</p></div>
+      <div class="help-item"><h3>🔑 Your Unlock Code</h3><p>Your unlock code came from your Gumroad receipt. Once you enter it correctly one time, this device stays unlocked forever. If you use a new phone or computer, you will need to enter the same code there too.</p></div>
+      <div class="help-item"><h3>🌸 Identity Reset Challenge</h3><p>Pick challenges from ten categories that fit your life. Check them off each day. This is your own custom challenge, not a strict set of rules. Do as many or as few as feel right.</p></div>
+      <div class="help-item"><h3>🙏 Gratitude Log</h3><p>Write three good things from your day. Even small things count. This helps train your mind to notice the good.</p></div>
+      <div class="help-item"><h3>🎯 Vision Board</h3><p>Write down goals and things you want in your life. Come back and read them any time you need a reminder of why you started.</p></div>
+      <div class="help-item"><h3>💗 Self Care Checklist</h3><p>A simple daily list of ways to care for yourself. Check off what you did today.</p></div>
+      <div class="help-item"><h3>📅 Weekly Review</h3><p>Once a week, look back and write about what went well, what was hard, and what you want to do differently. This helps you learn from each week instead of just moving past it.</p></div>
+      <div class="help-item"><h3>🏆 Milestones</h3><p>Every 10 days you show up and use the app, you unlock a new milestone. This is a way to see your consistency build over time.</p></div>
+    </div>
+  </div>
+
+  <div class="panel-overlay hidden" id="overlay-settingsPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">Settings</h2><button class="panel-close" onclick="closePanel('settingsPanel')">✕</button></div>
+      <div class="settings-row">
+        <div><div class="settings-label">Color theme</div><div class="settings-sub">Change your color family and mode</div></div>
+      </div>
+      <div class="theme-grid" id="settingsThemeGrid" style="margin:var(--space-3) 0;"></div>
+      <div class="mode-toggle" id="settingsModeToggle">
+        <button class="mode-btn" data-mode="light" onclick="setModeSettings('light')">Light</button>
+        <button class="mode-btn" data-mode="dark" onclick="setModeSettings('dark')">Dark</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Back up your data</div><div class="settings-sub">Save a file with all your progress</div></div>
+        <button class="btn btn-primary btn-sm" onclick="exportData()">Back up</button>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-label">Restore from backup</div><div class="settings-sub">Bring your progress back from a file</div></div>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('restoreFile').click()">Restore</button>
+        <input type="file" id="restoreFile" accept=".json" class="hidden" onchange="importData(event)">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============ CONFIG ============ */
+const GUMROAD_PRODUCT_ID = "PASTE_YOUR_PRODUCT_ID_HERE"; // from Gumroad Content page, License key module
+const GUMROAD_PRODUCT_URL = "https://catfav.gumroad.com/l/resether"; // update to your real link
+document.getElementById('buyLink').href = GUMROAD_PRODUCT_URL;
+
+const THEME_FAMILIES = [
+  {id:'pink', name:'Pink', swatch:'#E88AA3'},
+  {id:'purple', name:'Purple', swatch:'#A688D6'},
+  {id:'yellow', name:'Yellow', swatch:'#E8B84B'},
+  {id:'blue', name:'Blue', swatch:'#5FADD1'}
+];
+
+const CBT_PROMPTS = [
+  "What is a thought that made today feel heavy?",
+  "What is a rule you hold yourself to that you would never hold a friend to?",
+  "What went right today that you almost didn't notice?",
+  "What are you afraid people will think if you change?",
+  "What is one thing you did today that your old self could not have done?",
+  "What is a story about yourself you are ready to stop telling?",
+  "Where did you show up for yourself today, even in a small way?"
+];
+const AFFIRMATIONS = [
+  "I am becoming stronger every day.",
+  "I keep my promises to myself.",
+  "I am allowed to take up space.",
+  "My past does not decide my future.",
+  "I am proud of how far I have already come.",
+  "I choose myself today.",
+  "Small steps are still steps forward.",
+  "I am worthy of the life I am building."
+];
+const CHALLENGE_CATEGORIES = [
+  { id:'learn', name:'Learn & Read', icon:'📚', items:['Read 10 pages of a growth book','Write down one new thing you learned','Look up a word that describes who you are becoming','Read about a woman you admire','Learn one fact outside your usual interests','Finish one chapter before bed','Try one new skill for 15 minutes'] },
+  { id:'write', name:'Write & Reflect', icon:'✍️', items:['Journal for 5 minutes','Write a letter to your past self','Write 3 things you did right today','Write your biggest fear, then why it will not stop you','End the day with: today I became a little more...','Write one goal for tomorrow','Write down a lesson from today'] },
+  { id:'grow', name:'Grow & Build', icon:'🌱', items:['Do one hard thing before noon','Say no to one thing that drains you','Say yes to one thing that scares you a little','Fix one small thing you have been avoiding','Set one boundary, even quietly','Start the task you keep putting off','Ask for help with one thing'] },
+  { id:'selflove', name:'Self Love & Self Care', icon:'💗', items:['Move your body for 20 minutes','Drink enough water','Get outside for 10 minutes','Compliment yourself out loud','Rest without guilt for 15 minutes','Do one thing just because it feels good','Say one kind thing to yourself in the mirror'] },
+  { id:'money', name:'Money & Discipline', icon:'💰', items:['Track every dollar spent today','Skip one unnecessary purchase','Check in on one financial goal','Put a small amount toward savings','Read one article on money basics','Review one subscription you forgot about','Plan tomorrow\'s spending'] },
+  { id:'environment', name:'Environment & Space', icon:'🏡', items:['Make your bed','Clear one surface','Unfollow one account that makes you compare','Organize one small space','Light a candle or freshen your space','Do one load of laundry','Throw away 5 things you do not need'] },
+  { id:'dump', name:'Dump & Replace', icon:'🚫', items:['Swap doom-scrolling for reading','Swap negative self-talk for one affirmation','Swap a skipped meal for a nourishing one','Swap isolating for reaching out to someone who lifts you up','Swap procrastinating for 10 minutes of the task','Swap complaining for one thing you are grateful for','Swap a bad habit for a better one, your choice'] },
+  { id:'relationships', name:'Relationships & Boundaries', icon:'🤝', items:['Reach out to someone who lifts you up','Say one honest thing you have been holding back','Spend time with someone in person, not just online','Forgive one small thing, even just for yourself','Set one boundary with someone today','Say thank you to someone who deserves it','Distance yourself from one draining conversation'] },
+  { id:'purpose', name:'Purpose & Direction', icon:'🎯', items:['Write down one long-term goal','Take one small step toward that goal','Ask yourself: does this fit who I am becoming?','Plan your week for 10 minutes','Revisit your Future Her letter','Write down what you want your life to look like in a year','Do one thing that moves you closer to your purpose'] },
+  { id:'beauty', name:'Beauty & Confidence', icon:'💄', items:['Follow a simple skincare routine','Wear something that makes you feel good','Stand tall and notice your posture','Take one photo of yourself, just for you','Practice one confident habit, like eye contact or a steady voice','Do your hair or makeup for no reason at all','Write down one thing you love about your appearance'] }
+];
+const SELFCARE_ITEMS = ['Drank enough water','Ate a nourishing meal','Moved my body','Got fresh air','Took a break from my phone','Said something kind to myself','Went to bed at a good time'];
+
+const IDENTITY_STATEMENTS = [
+  "I am becoming a woman who keeps her promises to herself.",
+  "I am becoming a woman who chooses herself first.",
+  "I am becoming a woman who is proud of small wins.",
+  "I am becoming a woman who speaks to herself with kindness.",
+  "I am becoming a woman who finishes what she starts.",
+  "I am becoming a woman who protects her peace.",
+  "I am becoming a woman who trusts herself."
+];
+
+/* ============ STORAGE HELPERS ============ */
+const store = {
+  get(key, fallback){ try{ const v = localStorage.getItem('rh_'+key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; } },
+  set(key, val){ try{ localStorage.setItem('rh_'+key, JSON.stringify(val)); }catch(e){} }
+};
+
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function dayNumber(){
+  const start = store.get('startDate', null);
+  if(!start) return 1;
+  const diff = Math.floor((new Date(todayKey()) - new Date(start)) / 86400000) + 1;
+  return Math.max(1, Math.min(90, diff));
+}
+
+/* ============ ONBOARDING LOGIC ============ */
+let obStep = 0;
+let obTheme = 'pink';
+let obMode = 'light';
+
+function obGo(step){
+  document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.ob-screen[data-step="'+step+'"]').classList.add('active');
+  obStep = step;
+}
+function obSaveName(){
+  const name = document.getElementById('obName').value.trim();
+  if(!name){ document.getElementById('obName').focus(); return; }
+  store.set('name', name);
+  obGo(2);
+}
+function renderThemeGrid(targetId, onPick){
+  const grid = document.getElementById(targetId);
+  grid.innerHTML = '';
+  THEME_FAMILIES.forEach(t=>{
+    const el = document.createElement('div');
+    el.className = 'theme-swatch';
+    el.style.background = t.swatch;
+    el.dataset.family = t.id;
+    el.onclick = ()=>{ onPick(t.id); grid.querySelectorAll('.theme-swatch').forEach(s=>s.classList.remove('selected')); el.classList.add('selected'); };
+    grid.appendChild(el);
+  });
+}
+renderThemeGrid('themeGrid', (id)=>{ obTheme = id; applyTheme(obTheme, obMode); });
+function setMode(mode){
+  obMode = mode;
+  document.querySelectorAll('#modeToggle .mode-btn').forEach(b=>b.classList.toggle('selected', b.dataset.mode===mode));
+  applyTheme(obTheme, obMode);
+}
+function applyTheme(family, mode){
+  document.body.setAttribute('data-theme', family+'-'+mode);
+  store.set('theme', family+'-'+mode);
+}
+// default select pink
+setTimeout(()=>{ const first = document.querySelector('#themeGrid .theme-swatch'); if(first) first.classList.add('selected'); }, 0);
+
+function obFinish(){
+  const letter = document.getElementById('obFutureHer').value.trim();
+  store.set('futureHer', letter || "I didn't write anything yet, and that's okay.");
+  store.set('startDate', todayKey());
+  store.set('onboarded', true);
+  document.getElementById('onboarding').classList.add('hidden');
+  showLockOrApp();
+}
+
+/* ============ LOCK / UNLOCK ============ */
+// Panels that stay free to browse even before unlocking (builds trust before asking to buy)
+const FREE_PANELS = ['helpPanel', 'settingsPanel'];
+
+function showLockOrApp(){
+  const unlocked = store.get('unlocked', false);
+  document.getElementById('mainApp').classList.remove('hidden');
+  if(unlocked){
+    document.getElementById('previewBanner').classList.add('hidden');
+  } else {
+    document.getElementById('previewBanner').classList.remove('hidden');
+  }
+  startApp();
+}
+function closeLockOverlay(){
+  document.getElementById('lockOverlay').classList.add('hidden');
+}
+
+async function tryUnlock(){
+  const input = document.getElementById('unlockInput');
+  const err = document.getElementById('lockError');
+  const code = input.value.trim();
+  err.textContent = '';
+  if(!code){ err.textContent = 'Please enter your activation code.'; return; }
+
+  // Local dev/testing bypass code — remove before real launch
+  if(code.toUpperCase() === 'PREVIEWTEST') {
+    store.set('unlocked', true);
+    document.getElementById('lockOverlay').classList.add('hidden');
+    document.getElementById('previewBanner').classList.add('hidden');
+    hideAllScrims();
+    return;
+  }
+
+  if(GUMROAD_PRODUCT_ID === 'PASTE_YOUR_PRODUCT_ID_HERE'){
+    err.textContent = 'App is not connected to Gumroad yet. See setup notes.';
+    return;
+  }
+
+  err.textContent = 'Checking your code...';
+  try{
+    const body = new URLSearchParams();
+    body.append('product_id', GUMROAD_PRODUCT_ID);
+    body.append('license_key', code);
+    body.append('increment_uses_count', 'false');
+    const res = await fetch('https://api.gumroad.com/v2/licenses/verify', { method:'POST', body });
+    const data = await res.json();
+    if(data.success){
+      store.set('unlocked', true);
+      document.getElementById('lockOverlay').classList.add('hidden');
+      document.getElementById('previewBanner').classList.add('hidden');
+      hideAllScrims();
+    } else {
+      err.textContent = "That code didn't work. Please check it and try again.";
+    }
+  }catch(e){
+    err.textContent = 'Could not check your code. Check your internet connection and try again.';
+  }
+}
+
+/* ============ MAIN APP ============ */
+function startApp(){
+  document.getElementById('mainApp').classList.remove('hidden');
+  const theme = store.get('theme', 'pink-light');
+  document.body.setAttribute('data-theme', theme);
+  document.getElementById('greetName').textContent = 'Hi ' + store.get('name','friend') + ' 🌸';
+
+  const day = dayNumber();
+  document.getElementById('dayLabel').textContent = 'Day ' + day + ' of 90';
+  document.getElementById('phaseFill').style.width = Math.round((day/90)*100) + '%';
+  let phase = 'Phase 1 · Build';
+  if(day > 60) phase = 'Phase 3 · Grow';
+  else if(day > 30) phase = 'Phase 2 · Rewire';
+  document.getElementById('phaseLabel').textContent = phase;
+
+  const seed = day;
+  document.getElementById('affirmationText').textContent = AFFIRMATIONS[seed % AFFIRMATIONS.length];
+  document.getElementById('cbtPrompt').textContent = CBT_PROMPTS[seed % CBT_PROMPTS.length];
+  document.getElementById('identityStatement').textContent = IDENTITY_STATEMENTS[seed % IDENTITY_STATEMENTS.length];
+
+  const journalToday = store.get('journal', {})[todayKey()];
+  if(journalToday && journalToday.cbt) document.getElementById('cbtAnswer').value = journalToday.cbt;
+  const identityToday = store.get('identityLog', {})[todayKey()];
+  if(identityToday) document.getElementById('identityAnswer').value = identityToday;
+
+  renderHabits();
+  renderMoodHistory();
+  renderThemeGrid('settingsThemeGrid', (id)=>{
+    const mode = document.body.getAttribute('data-theme').split('-')[1] || 'light';
+    applyTheme(id, mode);
+  });
+  renderChallenges();
+  renderVision();
+  renderSelfcare();
+  renderMilestones();
+  loadGratitude();
+
+  if(day >= 90){
+    document.getElementById('futureHerLocked').classList.add('hidden');
+    document.getElementById('futureHerReveal').classList.remove('hidden');
+    document.getElementById('futureHerText').textContent = store.get('futureHer', '');
+  }
+}
+
+/* ============ PANELS ============ */
+function wrapPanelContent(id){
+  const panelEl = document.querySelector('#overlay-'+id+' .panel');
+  if(panelEl.querySelector('.panel-content-wrap')) return; // already wrapped, just reuse it
+  const head = panelEl.querySelector('.panel-head');
+  const wrap = document.createElement('div');
+  wrap.className = 'panel-content-wrap';
+  const toMove = [];
+  let node = head.nextSibling;
+  while(node){ toMove.push(node); node = node.nextSibling; }
+  toMove.forEach(n=>wrap.appendChild(n));
+  panelEl.appendChild(wrap);
+  const scrim = document.createElement('div');
+  scrim.className = 'lock-scrim hidden';
+  scrim.innerHTML = '<div class="lock-scrim-card"><div class="lsc-icon">🔒</div><div class="lsc-title">This is the real feature</div><div class="lsc-sub">Unlock the full version to start using it and save your progress.</div><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'lockOverlay\').classList.remove(\'hidden\')">Unlock Full Version</button></div>';
+  wrap.appendChild(scrim);
+}
+function openPanel(id){
+  document.getElementById('overlay-'+id).classList.remove('hidden');
+  if(!FREE_PANELS.includes(id)){
+    wrapPanelContent(id);
+    const unlocked = store.get('unlocked', false);
+    document.querySelector('#overlay-'+id+' .lock-scrim').classList.toggle('hidden', unlocked);
+  }
+}
+function hideAllScrims(){
+  document.querySelectorAll('.lock-scrim').forEach(s=>s.classList.add('hidden'));
+}
+function closePanel(id){ document.getElementById('overlay-'+id).classList.add('hidden'); }
+
+/* ============ JOURNAL ============ */
+function saveJournalEntry(){
+  const journal = store.get('journal', {});
+  journal[todayKey()] = { cbt: document.getElementById('cbtAnswer').value };
+  store.set('journal', journal);
+  closePanel('promptPanel');
+}
+function saveIdentityEntry(){
+  const log = store.get('identityLog', {});
+  log[todayKey()] = document.getElementById('identityAnswer').value;
+  store.set('identityLog', log);
+  closePanel('journalPanel');
+}
+
+/* ============ MOOD ============ */
+function setMood(val){
+  const moods = store.get('moods', {});
+  moods[todayKey()] = val;
+  store.set('moods', moods);
+  document.querySelectorAll('.mood-opt').forEach(b=>b.classList.toggle('selected', +b.dataset.mood===val));
+  renderMoodHistory();
+}
+function renderMoodHistory(){
+  const moods = store.get('moods', {});
+  const today = moods[todayKey()];
+  if(today){ document.querySelectorAll('.mood-opt').forEach(b=>b.classList.toggle('selected', +b.dataset.mood===today)); }
+  const el = document.getElementById('moodHistory');
+  el.innerHTML = '';
+  const colors = {1:'#C85E5E',2:'#E3A857',3:'#D9CB9B',4:'#8FBF9F',5:'#5FADD1'};
+  const days = [];
+  for(let i=13;i>=0;i--){ const d = new Date(); d.setDate(d.getDate()-i); days.push(d.toISOString().slice(0,10)); }
+  days.forEach(d=>{
+    const dot = document.createElement('div');
+    dot.className = 'mood-dot';
+    dot.style.background = moods[d] ? colors[moods[d]] : 'var(--border)';
+    el.appendChild(dot);
+  });
+}
+
+/* ============ HABITS ============ */
+function renderHabits(){
+  const habits = store.get('habits', []);
+  const log = store.get('habitLog', {});
+  const today = log[todayKey()] || [];
+  const list = document.getElementById('habitList');
+  list.innerHTML = '';
+  habits.forEach(h=>{
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    const done = today.includes(h.id);
+    const streak = calcStreak(h.id);
+    row.innerHTML = `
+      <button class="habit-check ${done?'done':''}" onclick="toggleHabit('${h.id}')">${done?'✓':''}</button>
+      <div style="flex:1;"><div class="habit-name">${h.name}</div><div class="habit-streak">${streak} day streak</div></div>
+      <button class="habit-del" onclick="deleteHabit('${h.id}')">✕</button>
+    `;
+    list.appendChild(row);
+  });
+  document.getElementById('habitSummary').textContent = today.length + ' of ' + habits.length + ' done';
+}
+function addHabit(){
+  const input = document.getElementById('newHabitInput');
+  const name = input.value.trim();
+  if(!name) return;
+  const habits = store.get('habits', []);
+  habits.push({ id: 'h'+Date.now(), name });
+  store.set('habits', habits);
+  input.value = '';
+  renderHabits();
+}
+function deleteHabit(id){
+  let habits = store.get('habits', []);
+  habits = habits.filter(h=>h.id!==id);
+  store.set('habits', habits);
+  renderHabits();
+}
+function toggleHabit(id){
+  const log = store.get('habitLog', {});
+  const today = log[todayKey()] || [];
+  const idx = today.indexOf(id);
+  if(idx>-1) today.splice(idx,1); else today.push(id);
+  log[todayKey()] = today;
+  store.set('habitLog', log);
+  renderHabits();
+}
+function calcStreak(id){
+  const log = store.get('habitLog', {});
+  let streak = 0;
+  for(let i=0;i<90;i++){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    if(log[key] && log[key].includes(id)) streak++;
+    else break;
+  }
+  return streak;
+}
+
+/* ============ SETTINGS ============ */
+function setModeSettings(mode){
+  const family = document.body.getAttribute('data-theme').split('-')[0];
+  applyTheme(family, mode);
+  document.querySelectorAll('#settingsModeToggle .mode-btn').forEach(b=>b.classList.toggle('selected', b.dataset.mode===mode));
+}
+
+/* ============ BACKUP / RESTORE ============ */
+function exportData(){
+  const all = {};
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k.startsWith('rh_')) all[k] = localStorage.getItem(k);
+  }
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'reset-her-backup-' + todayKey() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function importData(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result);
+      Object.keys(data).forEach(k=>{ if(k.startsWith('rh_')) localStorage.setItem(k, data[k]); });
+      location.reload();
+    }catch(err){
+      alert('This file could not be read. Please choose a backup file from Reset Her.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ============ IDENTITY RESET CHALLENGE ============ */
+function renderChallenges(){
+  const chosen = store.get('chosenChallenges', []);
+  const listEl = document.getElementById('challengeCategoryList');
+  listEl.innerHTML = '';
+  CHALLENGE_CATEGORIES.forEach(cat=>{
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '18px';
+    const title = document.createElement('div');
+    title.className = 'prompt-label';
+    title.textContent = cat.icon + ' ' + cat.name;
+    wrap.appendChild(title);
+    cat.items.forEach((item, i)=>{
+      const itemId = cat.id + '-' + i;
+      const row = document.createElement('div');
+      row.className = 'habit-row';
+      row.style.marginBottom = '6px';
+      const isChosen = chosen.includes(itemId);
+      row.innerHTML = `<button class="habit-check ${isChosen?'done':''}" onclick="toggleChosenChallenge('${itemId}')">${isChosen?'✓':''}</button><div class="habit-name" style="font-weight:500; font-size:13.5px;">${item}</div>`;
+      wrap.appendChild(row);
+    });
+    listEl.appendChild(wrap);
+  });
+  renderChosenChallenges();
+}
+function toggleChosenChallenge(itemId){
+  let chosen = store.get('chosenChallenges', []);
+  if(chosen.includes(itemId)) chosen = chosen.filter(x=>x!==itemId);
+  else chosen.push(itemId);
+  store.set('chosenChallenges', chosen);
+  renderChallenges();
+  document.getElementById('challengeSummary').textContent = chosen.length + ' challenges chosen';
+}
+function renderChosenChallenges(){
+  const chosen = store.get('chosenChallenges', []);
+  const done = store.get('challengeLog', {})[todayKey()] || [];
+  const el = document.getElementById('chosenChallengeList');
+  el.innerHTML = '';
+  if(chosen.length===0){ el.innerHTML = '<p style="font-size:13px; color:var(--text-soft);">Pick challenges above to build your list.</p>'; return; }
+  chosen.forEach(itemId=>{
+    const [catId, idx] = itemId.split('-');
+    const cat = CHALLENGE_CATEGORIES.find(c=>c.id===catId);
+    const text = cat ? cat.items[+idx] : itemId;
+    const isDone = done.includes(itemId);
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    row.innerHTML = `<button class="habit-check ${isDone?'done':''}" onclick="toggleChallengeDone('${itemId}')">${isDone?'✓':''}</button><div class="habit-name" style="font-size:13.5px;">${text}</div>`;
+    el.appendChild(row);
+  });
+  document.getElementById('challengeSummary').textContent = chosen.length + ' challenges chosen';
+}
+function toggleChallengeDone(itemId){
+  const log = store.get('challengeLog', {});
+  const today = log[todayKey()] || [];
+  const idx = today.indexOf(itemId);
+  if(idx>-1) today.splice(idx,1); else today.push(itemId);
+  log[todayKey()] = today;
+  store.set('challengeLog', log);
+  renderChosenChallenges();
+}
+
+/* ============ GRATITUDE ============ */
+function saveGratitude(){
+  const log = store.get('gratitude', {});
+  log[todayKey()] = [
+    document.getElementById('gratitude1').value,
+    document.getElementById('gratitude2').value,
+    document.getElementById('gratitude3').value
+  ];
+  store.set('gratitude', log);
+  closePanel('gratitudePanel');
+}
+function loadGratitude(){
+  const log = store.get('gratitude', {});
+  const today = log[todayKey()];
+  if(today){
+    document.getElementById('gratitude1').value = today[0] || '';
+    document.getElementById('gratitude2').value = today[1] || '';
+    document.getElementById('gratitude3').value = today[2] || '';
+  }
+}
+
+/* ============ VISION BOARD ============ */
+function renderVision(){
+  const items = store.get('vision', []);
+  const list = document.getElementById('visionList');
+  list.innerHTML = '';
+  items.forEach((v,i)=>{
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    row.innerHTML = `<div class="habit-name">${v}</div><button class="habit-del" onclick="deleteVision(${i})">✕</button>`;
+    list.appendChild(row);
+  });
+}
+function addVision(){
+  const input = document.getElementById('newVisionInput');
+  const val = input.value.trim();
+  if(!val) return;
+  const items = store.get('vision', []);
+  items.push(val);
+  store.set('vision', items);
+  input.value = '';
+  renderVision();
+}
+function deleteVision(i){
+  const items = store.get('vision', []);
+  items.splice(i,1);
+  store.set('vision', items);
+  renderVision();
+}
+
+/* ============ SELF CARE CHECKLIST ============ */
+function renderSelfcare(){
+  const done = store.get('selfcareLog', {})[todayKey()] || [];
+  const list = document.getElementById('selfcareList');
+  list.innerHTML = '';
+  SELFCARE_ITEMS.forEach((item,i)=>{
+    const isDone = done.includes(i);
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    row.innerHTML = `<button class="habit-check ${isDone?'done':''}" onclick="toggleSelfcare(${i})">${isDone?'✓':''}</button><div class="habit-name">${item}</div>`;
+    list.appendChild(row);
+  });
+}
+function toggleSelfcare(i){
+  const log = store.get('selfcareLog', {});
+  const today = log[todayKey()] || [];
+  const idx = today.indexOf(i);
+  if(idx>-1) today.splice(idx,1); else today.push(i);
+  log[todayKey()] = today;
+  store.set('selfcareLog', log);
+  renderSelfcare();
+}
+
+/* ============ WEEKLY REVIEW ============ */
+function saveReview(){
+  const reviews = store.get('reviews', []);
+  reviews.push({
+    date: todayKey(),
+    well: document.getElementById('reviewWell').value,
+    hard: document.getElementById('reviewHard').value,
+    next: document.getElementById('reviewNext').value
+  });
+  store.set('reviews', reviews);
+  document.getElementById('reviewWell').value = '';
+  document.getElementById('reviewHard').value = '';
+  document.getElementById('reviewNext').value = '';
+  closePanel('reviewPanel');
+}
+
+/* ============ MILESTONES ============ */
+function renderMilestones(){
+  const visits = store.get('visitDays', []);
+  const today = todayKey();
+  if(!visits.includes(today)){ visits.push(today); store.set('visitDays', visits); }
+  const count = visits.length;
+  const unlocked = Math.floor(count/10);
+  const list = document.getElementById('milestoneList');
+  list.innerHTML = '';
+  const labels = ['First Steps','Building Momentum','Showing Up','Getting Stronger','Halfway There','Deep in the Work','Almost There','Nearly Home','So Close','Reset Complete'];
+  labels.forEach((label,i)=>{
+    const isUnlocked = i < unlocked;
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    row.innerHTML = `<div style="font-size:20px;">${isUnlocked ? '🏆' : '🔒'}</div><div style="flex:1;"><div class="habit-name">${label}</div><div class="habit-streak">Day ${(i+1)*10}</div></div>`;
+    list.appendChild(row);
+  });
+  document.getElementById('milestoneSummary').textContent = unlocked + ' of 10 unlocked';
+}
+
+/* ============ INIT ============ */
+(function init(){
+  const onboarded = store.get('onboarded', false);
+  if(onboarded){
+    document.getElementById('onboarding').classList.add('hidden');
+    const theme = store.get('theme', 'pink-light');
+    document.body.setAttribute('data-theme', theme);
+    showLockOrApp();
+  }
+})();
+</script>
+</body>
+</html>
