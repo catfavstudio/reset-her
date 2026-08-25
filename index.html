@@ -349,11 +349,13 @@ button{font-family:var(--font-body); cursor:pointer;}
   <div id="lockOverlay" class="panel-overlay hidden">
     <div class="panel">
       <div class="panel-head"><h2 style="font-size:20px;">Unlock Full Version</h2><button class="panel-close" onclick="closeLockOverlay()">✕</button></div>
-      <div class="ob-icon-big">🔓</div>
-      <p class="ob-sub" style="margin:0 auto var(--space-4); max-width:100%;">Enter your activation code to unlock instant lifetime access and free updates.</p>
+      <p class="ob-sub" style="margin:0 auto var(--space-4); max-width:100%;">Reset your identity and become the woman you're becoming, in 90 days.</p>
       <input type="text" id="unlockInput" class="lock-key-input" placeholder="Enter activation code">
       <div class="lock-error" id="lockError"></div>
-      <button class="btn btn-primary btn-block" onclick="tryUnlock()">Unlock Full Version</button>
+      <div class="ob-nav" style="max-width:100%;">
+        <button class="btn btn-ghost" onclick="closeLockOverlay()">Cancel</button>
+        <button class="btn btn-primary btn-block" onclick="tryUnlock()">Unlock Full Version</button>
+      </div>
       <p class="lock-note">Don't have a code yet? <a href="#" id="buyLink" style="color:var(--accent-deep); font-weight:700;">Get Reset Her on Gumroad</a></p>
     </div>
   </div>
@@ -871,7 +873,7 @@ function wrapPanelContent(id){
   panelEl.appendChild(wrap);
   const scrim = document.createElement('div');
   scrim.className = 'lock-scrim hidden';
-  scrim.innerHTML = '<div class="lock-scrim-card"><div class="lsc-icon">🔒</div><div class="lsc-title">This is the real feature</div><div class="lsc-sub">Unlock the full version to start using it and save your progress.</div><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'lockOverlay\').classList.remove(\'hidden\')">Unlock Full Version</button></div>';
+  scrim.innerHTML = '<div class="lock-scrim-card"><div class="lsc-title">Unlock Full Version</div><div class="lsc-sub">Reset your identity and become the woman you\'re becoming, in 90 days.</div><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'lockOverlay\').classList.remove(\'hidden\')">Unlock Full Version</button></div>';
   wrap.appendChild(scrim);
 }
 function openPanel(id){
