@@ -349,7 +349,7 @@ button{font-family:var(--font-body); cursor:pointer;}
   <div id="lockOverlay" class="panel-overlay hidden">
     <div class="panel">
       <div class="panel-head"><h2 style="font-size:20px;">Unlock Full Version</h2><button class="panel-close" onclick="closeLockOverlay()">✕</button></div>
-      <p class="ob-sub" style="margin:0 auto var(--space-4); max-width:100%;">Reset your identity and become the woman you're becoming, in 90 days.</p>
+      <p class="ob-sub" style="margin:0 auto var(--space-4); max-width:100%;">Reset your identity, become more of her in 90 days.</p>
       <input type="text" id="unlockInput" class="lock-key-input" placeholder="Enter activation code">
       <div class="lock-error" id="lockError"></div>
       <div class="ob-nav" style="max-width:100%;">
@@ -786,6 +786,7 @@ async function tryUnlock(){
     document.getElementById('lockOverlay').classList.add('hidden');
     document.getElementById('previewBanner').classList.add('hidden');
     hideAllScrims();
+    renderChallenges();
     return;
   }
 
@@ -807,6 +808,7 @@ async function tryUnlock(){
       document.getElementById('lockOverlay').classList.add('hidden');
       document.getElementById('previewBanner').classList.add('hidden');
       hideAllScrims();
+      renderChallenges();
     } else {
       err.textContent = "That code didn't work. Please check it and try again.";
     }
@@ -873,7 +875,7 @@ function wrapPanelContent(id){
   panelEl.appendChild(wrap);
   const scrim = document.createElement('div');
   scrim.className = 'lock-scrim hidden';
-  scrim.innerHTML = '<div class="lock-scrim-card"><div class="lsc-title">Unlock Full Version</div><div class="lsc-sub">Reset your identity and become the woman you\'re becoming, in 90 days.</div><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'lockOverlay\').classList.remove(\'hidden\')">Unlock Full Version</button></div>';
+  scrim.innerHTML = '<div class="lock-scrim-card"><div class="lsc-title">Unlock Full Version</div><div class="lsc-sub">Reset your identity, become more of her in 90 days.</div><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'lockOverlay\').classList.remove(\'hidden\')">Unlock Full Version</button></div>';
   wrap.appendChild(scrim);
 }
 function openPanel(id){
@@ -1029,6 +1031,7 @@ function importData(evt){
 /* ============ IDENTITY RESET CHALLENGE ============ */
 function renderChallenges(){
   const chosen = store.get('chosenChallenges', []);
+  const unlocked = store.get('unlocked', false);
   const listEl = document.getElementById('challengeCategoryList');
   listEl.innerHTML = '';
   CHALLENGE_CATEGORIES.forEach(cat=>{
@@ -1038,6 +1041,14 @@ function renderChallenges(){
     title.className = 'prompt-label';
     title.textContent = cat.icon + ' ' + cat.name;
     wrap.appendChild(title);
+    if(!unlocked){
+      const teaser = document.createElement('div');
+      teaser.className = 'habit-row';
+      teaser.innerHTML = `<div style="font-size:18px;">🔒</div><div class="habit-name" style="font-weight:500; font-size:13px; color:var(--text-soft);">${cat.items.length} challenges inside, unlock to see</div>`;
+      wrap.appendChild(teaser);
+      listEl.appendChild(wrap);
+      return;
+    }
     cat.items.forEach((item, i)=>{
       const itemId = cat.id + '-' + i;
       const row = document.createElement('div');
