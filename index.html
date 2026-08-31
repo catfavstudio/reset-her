@@ -236,10 +236,29 @@ button{font-family:var(--font-body); cursor:pointer;}
 .help-item p{font-size:13.5px; color:var(--text-soft); margin-bottom:0;}
 
 /* ============ SETTINGS ============ */
+/* ============ CHALLENGE TABS ============ */
+.challenge-tabs{display:flex; gap:8px; overflow-x:auto; padding-bottom:10px; margin-bottom:var(--space-3); -webkit-overflow-scrolling:touch;}
+.challenge-tabs::-webkit-scrollbar{display:none;}
+.ct-tab{flex-shrink:0; padding:9px 14px; border-radius:999px; border:2px solid var(--border); background:var(--surface); color:var(--text-soft); font-weight:700; font-size:12.5px; white-space:nowrap;}
+.ct-tab.active{background:var(--accent-deep); color:var(--on-accent); border-color:var(--accent-deep);}
+.time-badge{font-size:10.5px; font-weight:700; color:var(--accent-deep); background:var(--surface-2); border-radius:999px; padding:3px 8px; white-space:nowrap; margin-left:6px;}
+.habit-row-main{flex:1; display:flex; flex-direction:column;}
+.habit-row-top{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+.save-confirm{background:var(--success); color:#173322; text-align:center; padding:10px; border-radius:var(--radius-md); font-weight:700; font-size:13px; margin-top:var(--space-3); display:none;}
+.save-confirm.show{display:block; animation:fadeUp .3s ease;}
+.overview-stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:var(--space-4); text-align:center;}
+.overview-stat .num{font-family:var(--font-display); font-size:28px; font-weight:700; color:var(--accent-deep);}
+.overview-stat .label{font-size:11.5px; color:var(--text-soft); text-transform:uppercase; letter-spacing:.5px;}
+.overview-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:var(--space-4);}
+.history-heat{display:flex; gap:3px; flex-wrap:wrap; margin-top:8px;}
+.history-cell{width:16px; height:16px; border-radius:4px; background:var(--border);}
+.history-cell.hit{background:var(--accent-deep);}
+
 .settings-row{display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border);}
 .settings-row:last-child{border-bottom:none;}
 .settings-label{font-size:14px; font-weight:600;}
 .settings-sub{font-size:12px; color:var(--text-soft);}
+
 
 /* ============ LOCK SCRIM (see feature, can't use it) ============ */
 .panel-content-wrap{position:relative;}
@@ -523,12 +542,8 @@ button{font-family:var(--font-body); cursor:pointer;}
   <div class="panel-overlay hidden" id="overlay-challengePanel">
     <div class="panel">
       <div class="panel-head"><h2 style="font-size:20px;">Identity Reset Challenge</h2><button class="panel-close" onclick="closePanel('challengePanel')">✕</button></div>
-      <p style="font-size:13.5px; color:var(--text-soft);">Pick the challenges that fit your life. Do them each day you choose. This is your own reset, built by you.</p>
-      <div id="challengeCategoryList"></div>
-      <div style="margin-top:var(--space-4); padding-top:var(--space-4); border-top:1px solid var(--border);">
-        <div class="prompt-label">My Chosen Challenges Today</div>
-        <div id="chosenChallengeList"></div>
-      </div>
+      <div class="challenge-tabs no-scrim" id="challengeTabs"></div>
+      <div id="challengeTabContent"></div>
     </div>
   </div>
 
@@ -668,16 +683,36 @@ const AFFIRMATIONS = [
   "I am worthy of the life I am building."
 ];
 const CHALLENGE_CATEGORIES = [
-  { id:'learn', name:'Learn & Read', icon:'📚', items:['Read 10 pages of a growth book','Write down one new thing you learned','Look up a word that describes who you are becoming','Read about a woman you admire','Learn one fact outside your usual interests','Finish one chapter before bed','Try one new skill for 15 minutes'] },
-  { id:'write', name:'Write & Reflect', icon:'✍️', items:['Journal for 5 minutes','Write a letter to your past self','Write 3 things you did right today','Write your biggest fear, then why it will not stop you','End the day with: today I became a little more...','Write one goal for tomorrow','Write down a lesson from today'] },
-  { id:'grow', name:'Grow & Build', icon:'🌱', items:['Do one hard thing before noon','Say no to one thing that drains you','Say yes to one thing that scares you a little','Fix one small thing you have been avoiding','Set one boundary, even quietly','Start the task you keep putting off','Ask for help with one thing'] },
-  { id:'selflove', name:'Self Love & Self Care', icon:'💗', items:['Move your body for 20 minutes','Drink enough water','Get outside for 10 minutes','Compliment yourself out loud','Rest without guilt for 15 minutes','Do one thing just because it feels good','Say one kind thing to yourself in the mirror'] },
-  { id:'money', name:'Money & Discipline', icon:'💰', items:['Track every dollar spent today','Skip one unnecessary purchase','Check in on one financial goal','Put a small amount toward savings','Read one article on money basics','Review one subscription you forgot about','Plan tomorrow\'s spending'] },
-  { id:'environment', name:'Environment & Space', icon:'🏡', items:['Make your bed','Clear one surface','Unfollow one account that makes you compare','Organize one small space','Light a candle or freshen your space','Do one load of laundry','Throw away 5 things you do not need'] },
-  { id:'dump', name:'Dump & Replace', icon:'🚫', items:['Swap doom-scrolling for reading','Swap negative self-talk for one affirmation','Swap a skipped meal for a nourishing one','Swap isolating for reaching out to someone who lifts you up','Swap procrastinating for 10 minutes of the task','Swap complaining for one thing you are grateful for','Swap a bad habit for a better one, your choice'] },
-  { id:'relationships', name:'Relationships & Boundaries', icon:'🤝', items:['Reach out to someone who lifts you up','Say one honest thing you have been holding back','Spend time with someone in person, not just online','Forgive one small thing, even just for yourself','Set one boundary with someone today','Say thank you to someone who deserves it','Distance yourself from one draining conversation'] },
-  { id:'purpose', name:'Purpose & Direction', icon:'🎯', items:['Write down one long-term goal','Take one small step toward that goal','Ask yourself: does this fit who I am becoming?','Plan your week for 10 minutes','Revisit your Future Her letter','Write down what you want your life to look like in a year','Do one thing that moves you closer to your purpose'] },
-  { id:'beauty', name:'Beauty & Confidence', icon:'💄', items:['Follow a simple skincare routine','Wear something that makes you feel good','Stand tall and notice your posture','Take one photo of yourself, just for you','Practice one confident habit, like eye contact or a steady voice','Do your hair or makeup for no reason at all','Write down one thing you love about your appearance'] }
+  { id:'learn', name:'Learn & Read', icon:'📚', items:[
+    {t:'Read 10 pages of a growth book', m:10},{t:'Write down one new thing you learned', m:3},{t:'Look up a word that describes who you are becoming', m:2},{t:'Read about a woman you admire', m:8},{t:'Learn one fact outside your usual interests', m:5},{t:'Finish one chapter before bed', m:15},{t:'Try one new skill for 15 minutes', m:15}
+  ]},
+  { id:'write', name:'Write & Reflect', icon:'✍️', items:[
+    {t:'Journal for 5 minutes', m:5},{t:'Write a letter to your past self', m:10},{t:'Write 3 things you did right today', m:3},{t:'Write your biggest fear, then why it will not stop you', m:8},{t:'End the day with: today I became a little more...', m:2},{t:'Write one goal for tomorrow', m:3},{t:'Write down a lesson from today', m:3}
+  ]},
+  { id:'grow', name:'Grow & Build', icon:'🌱', items:[
+    {t:'Do one hard thing before noon', m:10},{t:'Say no to one thing that drains you', m:1},{t:'Say yes to one thing that scares you a little', m:5},{t:'Fix one small thing you have been avoiding', m:10},{t:'Set one boundary, even quietly', m:2},{t:'Start the task you keep putting off', m:5},{t:'Ask for help with one thing', m:2}
+  ]},
+  { id:'selflove', name:'Self Love & Self Care', icon:'💗', items:[
+    {t:'Move your body for 20 minutes', m:20},{t:'Drink enough water', m:1},{t:'Get outside for 10 minutes', m:10},{t:'Compliment yourself out loud', m:1},{t:'Rest without guilt for 15 minutes', m:15},{t:'Do one thing just because it feels good', m:10},{t:'Say one kind thing to yourself in the mirror', m:1}
+  ]},
+  { id:'money', name:'Money & Discipline', icon:'💰', items:[
+    {t:'Track every dollar spent today', m:5},{t:'Skip one unnecessary purchase', m:1},{t:'Check in on one financial goal', m:3},{t:'Put a small amount toward savings', m:2},{t:'Read one article on money basics', m:8},{t:'Review one subscription you forgot about', m:5},{t:'Plan tomorrow\'s spending', m:5}
+  ]},
+  { id:'environment', name:'Environment & Space', icon:'🏡', items:[
+    {t:'Make your bed', m:2},{t:'Clear one surface', m:5},{t:'Unfollow one account that makes you compare', m:2},{t:'Organize one small space', m:10},{t:'Light a candle or freshen your space', m:2},{t:'Do one load of laundry', m:5},{t:'Throw away 5 things you do not need', m:5}
+  ]},
+  { id:'dump', name:'Dump & Replace', icon:'🚫', items:[
+    {t:'Swap doom-scrolling for reading', m:10},{t:'Swap negative self-talk for one affirmation', m:1},{t:'Swap a skipped meal for a nourishing one', m:10},{t:'Swap isolating for reaching out to someone who lifts you up', m:3},{t:'Swap procrastinating for 10 minutes of the task', m:10},{t:'Swap complaining for one thing you are grateful for', m:2},{t:'Swap a bad habit for a better one, your choice', m:5}
+  ]},
+  { id:'relationships', name:'Relationships & Boundaries', icon:'🤝', items:[
+    {t:'Reach out to someone who lifts you up', m:3},{t:'Say one honest thing you have been holding back', m:2},{t:'Spend time with someone in person, not just online', m:20},{t:'Forgive one small thing, even just for yourself', m:2},{t:'Set one boundary with someone today', m:2},{t:'Say thank you to someone who deserves it', m:1},{t:'Distance yourself from one draining conversation', m:1}
+  ]},
+  { id:'purpose', name:'Purpose & Direction', icon:'🎯', items:[
+    {t:'Write down one long-term goal', m:5},{t:'Take one small step toward that goal', m:10},{t:'Ask yourself: does this fit who I am becoming?', m:1},{t:'Plan your week for 10 minutes', m:10},{t:'Revisit your Future Her letter', m:3},{t:'Write down what you want your life to look like in a year', m:8},{t:'Do one thing that moves you closer to your purpose', m:10}
+  ]},
+  { id:'beauty', name:'Beauty & Confidence', icon:'💄', items:[
+    {t:'Follow a simple skincare routine', m:10},{t:'Wear something that makes you feel good', m:2},{t:'Stand tall and notice your posture', m:1},{t:'Take one photo of yourself, just for you', m:2},{t:'Practice one confident habit, like eye contact or a steady voice', m:5},{t:'Do your hair or makeup for no reason at all', m:15},{t:'Write down one thing you love about your appearance', m:2}
+  ]}
 ];
 const SELFCARE_ITEMS = ['Drank enough water','Ate a nourishing meal','Moved my body','Got fresh air','Took a break from my phone','Said something kind to myself','Went to bed at a good time'];
 
@@ -871,7 +906,10 @@ function wrapPanelContent(id){
   const toMove = [];
   let node = head.nextSibling;
   while(node){ toMove.push(node); node = node.nextSibling; }
-  toMove.forEach(n=>wrap.appendChild(n));
+  toMove.forEach(n=>{
+    if(n.nodeType===1 && n.classList && n.classList.contains('no-scrim')) return; // leave nav elements tappable, outside the lock
+    wrap.appendChild(n);
+  });
   panelEl.appendChild(wrap);
   const scrim = document.createElement('div');
   scrim.className = 'lock-scrim hidden';
@@ -1029,65 +1067,90 @@ function importData(evt){
 }
 
 /* ============ IDENTITY RESET CHALLENGE ============ */
+let activeChallengeTab = 'overview';
+
 function renderChallenges(){
-  const chosen = store.get('chosenChallenges', []);
-  const unlocked = store.get('unlocked', false);
-  const listEl = document.getElementById('challengeCategoryList');
-  listEl.innerHTML = '';
-  CHALLENGE_CATEGORIES.forEach(cat=>{
-    const wrap = document.createElement('div');
-    wrap.style.marginBottom = '18px';
-    const title = document.createElement('div');
-    title.className = 'prompt-label';
-    title.textContent = cat.icon + ' ' + cat.name;
-    wrap.appendChild(title);
-    if(!unlocked){
-      const teaser = document.createElement('div');
-      teaser.className = 'habit-row';
-      teaser.innerHTML = `<div style="font-size:18px;">🔒</div><div class="habit-name" style="font-weight:500; font-size:13px; color:var(--text-soft);">${cat.items.length} challenges inside, unlock to see</div>`;
-      wrap.appendChild(teaser);
-      listEl.appendChild(wrap);
-      return;
-    }
-    cat.items.forEach((item, i)=>{
-      const itemId = cat.id + '-' + i;
-      const row = document.createElement('div');
-      row.className = 'habit-row';
-      row.style.marginBottom = '6px';
-      const isChosen = chosen.includes(itemId);
-      row.innerHTML = `<button class="habit-check ${isChosen?'done':''}" onclick="toggleChosenChallenge('${itemId}')">${isChosen?'✓':''}</button><div class="habit-name" style="font-weight:500; font-size:13.5px;">${item}</div>`;
-      wrap.appendChild(row);
-    });
-    listEl.appendChild(wrap);
-  });
-  renderChosenChallenges();
+  renderChallengeTabs();
+  renderChallengeTabContent();
 }
+
+function renderChallengeTabs(){
+  const tabsEl = document.getElementById('challengeTabs');
+  tabsEl.innerHTML = '';
+  const overviewBtn = document.createElement('button');
+  overviewBtn.className = 'ct-tab' + (activeChallengeTab==='overview' ? ' active' : '');
+  overviewBtn.textContent = '📊 Overview';
+  overviewBtn.onclick = ()=>{ activeChallengeTab='overview'; renderChallenges(); };
+  tabsEl.appendChild(overviewBtn);
+  CHALLENGE_CATEGORIES.forEach(cat=>{
+    const btn = document.createElement('button');
+    btn.className = 'ct-tab' + (activeChallengeTab===cat.id ? ' active' : '');
+    btn.textContent = cat.icon + ' ' + cat.name;
+    btn.onclick = ()=>{ activeChallengeTab = cat.id; renderChallenges(); };
+    tabsEl.appendChild(btn);
+  });
+}
+
+function renderChallengeTabContent(){
+  const unlocked = store.get('unlocked', false);
+  const el = document.getElementById('challengeTabContent');
+  el.innerHTML = '';
+
+  if(activeChallengeTab === 'overview'){
+    el.appendChild(buildOverviewContent());
+    return;
+  }
+
+  const cat = CHALLENGE_CATEGORIES.find(c=>c.id===activeChallengeTab);
+  if(!cat) return;
+
+  const intro = document.createElement('p');
+  intro.style.cssText = 'font-size:13px; color:var(--text-soft); margin-bottom:12px;';
+  intro.textContent = 'Pick the ones that fit today. Each one shows about how long it takes.';
+  el.appendChild(intro);
+
+  if(!unlocked){
+    const teaser = document.createElement('div');
+    teaser.className = 'habit-row';
+    teaser.innerHTML = `<div style="font-size:18px;">🔒</div><div class="habit-name" style="font-weight:500; font-size:13px; color:var(--text-soft);">${cat.items.length} challenges inside, unlock to see</div>`;
+    el.appendChild(teaser);
+    return;
+  }
+
+  const chosen = store.get('chosenChallenges', []);
+  cat.items.forEach((item, i)=>{
+    const itemId = cat.id + '-' + i;
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    row.style.marginBottom = '8px';
+    const isChosen = chosen.includes(itemId);
+    row.innerHTML = `<button class="habit-check ${isChosen?'done':''}" onclick="toggleChosenChallenge('${itemId}')">${isChosen?'✓':''}</button><div class="habit-row-main"><div class="habit-row-top"><div class="habit-name" style="font-weight:500; font-size:13.5px;">${item.t}</div><span class="time-badge">${item.m} min</span></div></div>`;
+    el.appendChild(row);
+  });
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'btn btn-primary btn-block';
+  saveBtn.style.marginTop = 'var(--space-3)';
+  saveBtn.textContent = 'Save My Picks';
+  saveBtn.onclick = ()=>{
+    const confirmEl = document.createElement('div');
+    confirmEl.className = 'save-confirm show';
+    confirmEl.textContent = 'Saved! Your picks are ready in Overview.';
+    el.appendChild(confirmEl);
+    setTimeout(()=>confirmEl.remove(), 2200);
+  };
+  el.appendChild(saveBtn);
+}
+
 function toggleChosenChallenge(itemId){
   let chosen = store.get('chosenChallenges', []);
   if(chosen.includes(itemId)) chosen = chosen.filter(x=>x!==itemId);
   else chosen.push(itemId);
   store.set('chosenChallenges', chosen);
-  renderChallenges();
+  renderChallengeTabContent();
   document.getElementById('challengeSummary').textContent = chosen.length + ' challenges chosen';
 }
-function renderChosenChallenges(){
-  const chosen = store.get('chosenChallenges', []);
-  const done = store.get('challengeLog', {})[todayKey()] || [];
-  const el = document.getElementById('chosenChallengeList');
-  el.innerHTML = '';
-  if(chosen.length===0){ el.innerHTML = '<p style="font-size:13px; color:var(--text-soft);">Pick challenges above to build your list.</p>'; return; }
-  chosen.forEach(itemId=>{
-    const [catId, idx] = itemId.split('-');
-    const cat = CHALLENGE_CATEGORIES.find(c=>c.id===catId);
-    const text = cat ? cat.items[+idx] : itemId;
-    const isDone = done.includes(itemId);
-    const row = document.createElement('div');
-    row.className = 'habit-row';
-    row.innerHTML = `<button class="habit-check ${isDone?'done':''}" onclick="toggleChallengeDone('${itemId}')">${isDone?'✓':''}</button><div class="habit-name" style="font-size:13.5px;">${text}</div>`;
-    el.appendChild(row);
-  });
-  document.getElementById('challengeSummary').textContent = chosen.length + ' challenges chosen';
-}
+
 function toggleChallengeDone(itemId){
   const log = store.get('challengeLog', {});
   const today = log[todayKey()] || [];
@@ -1095,7 +1158,73 @@ function toggleChallengeDone(itemId){
   if(idx>-1) today.splice(idx,1); else today.push(itemId);
   log[todayKey()] = today;
   store.set('challengeLog', log);
-  renderChosenChallenges();
+  renderChallengeTabContent();
+}
+
+function buildOverviewContent(){
+  const wrap = document.createElement('div');
+  const chosen = store.get('chosenChallenges', []);
+  const log = store.get('challengeLog', {});
+  const done = log[todayKey()] || [];
+  const totalMinutes = chosen.reduce((sum, itemId)=>{
+    const [catId, idx] = itemId.split('-');
+    const cat = CHALLENGE_CATEGORIES.find(c=>c.id===catId);
+    return sum + (cat ? cat.items[+idx].m : 0);
+  }, 0);
+
+  let allTimeDone = 0;
+  Object.values(log).forEach(arr=>{ allTimeDone += arr.length; });
+
+  const stats = document.createElement('div');
+  stats.className = 'overview-grid';
+  stats.innerHTML = `
+    <div class="overview-stat"><div class="num">${done.length}/${chosen.length}</div><div class="label">Done Today</div></div>
+    <div class="overview-stat"><div class="num">${totalMinutes}</div><div class="label">Minutes Today</div></div>
+    <div class="overview-stat"><div class="num">${allTimeDone}</div><div class="label">All Time Total</div></div>
+    <div class="overview-stat"><div class="num">Day ${dayNumber()}</div><div class="label">Of 90</div></div>
+  `;
+  wrap.appendChild(stats);
+
+  const histTitle = document.createElement('div');
+  histTitle.className = 'prompt-label';
+  histTitle.textContent = 'Last 30 Days';
+  wrap.appendChild(histTitle);
+  const heat = document.createElement('div');
+  heat.className = 'history-heat';
+  for(let i=29;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    const cell = document.createElement('div');
+    cell.className = 'history-cell' + ((log[key] && log[key].length>0) ? ' hit' : '');
+    heat.appendChild(cell);
+  }
+  wrap.appendChild(heat);
+
+  const listTitle = document.createElement('div');
+  listTitle.className = 'prompt-label';
+  listTitle.style.marginTop = 'var(--space-4)';
+  listTitle.textContent = 'My Chosen Challenges Today';
+  wrap.appendChild(listTitle);
+
+  if(chosen.length===0){
+    const empty = document.createElement('p');
+    empty.style.cssText = 'font-size:13px; color:var(--text-soft);';
+    empty.textContent = 'Tap a category tab above to pick your challenges.';
+    wrap.appendChild(empty);
+  } else {
+    chosen.forEach(itemId=>{
+      const [catId, idx] = itemId.split('-');
+      const cat = CHALLENGE_CATEGORIES.find(c=>c.id===catId);
+      if(!cat) return;
+      const item = cat.items[+idx];
+      const isDone = done.includes(itemId);
+      const row = document.createElement('div');
+      row.className = 'habit-row';
+      row.innerHTML = `<button class="habit-check ${isDone?'done':''}" onclick="toggleChallengeDone('${itemId}')">${isDone?'✓':''}</button><div class="habit-row-main"><div class="habit-row-top"><div class="habit-name" style="font-size:13.5px;">${item.t}</div><span class="time-badge">${item.m} min</span></div></div>`;
+      wrap.appendChild(row);
+    });
+  }
+  return wrap;
 }
 
 /* ============ GRATITUDE ============ */
