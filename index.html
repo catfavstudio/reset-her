@@ -254,6 +254,20 @@ button{font-family:var(--font-body); cursor:pointer;}
 .history-cell{width:16px; height:16px; border-radius:4px; background:var(--border);}
 .history-cell.hit{background:var(--accent-deep);}
 
+/* ============ DONUT CHARTS ============ */
+.donut-row{display:flex; flex-wrap:wrap; gap:var(--space-4); justify-content:center; margin-bottom:var(--space-5);}
+.donut-block{text-align:center; width:150px;}
+.donut-wrap{position:relative; width:120px; height:120px; margin:0 auto 8px;}
+.donut{width:120px; height:120px; border-radius:50%; position:relative;}
+.donut::after{content:''; position:absolute; inset:22%; background:var(--surface); border-radius:50%;}
+.donut-label{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; z-index:1; text-align:center; padding:0 8px; line-height:1.2;}
+.donut-title{font-size:12px; font-weight:700; color:var(--text-soft); text-transform:uppercase; letter-spacing:.3px; margin-bottom:2px;}
+.donut-legend{display:flex; flex-direction:column; gap:3px; margin-top:6px; text-align:left; font-size:11px;}
+.donut-legend-item{display:flex; align-items:center; gap:5px;}
+.donut-legend-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+.history-full-heat{display:grid; grid-template-columns:repeat(10, 1fr); gap:3px; margin-top:8px;}
+
+
 .settings-row{display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border);}
 .settings-row:last-child{border-bottom:none;}
 .settings-label{font-size:14px; font-weight:600;}
@@ -395,6 +409,14 @@ button{font-family:var(--font-body); cursor:pointer;}
     </div>
 
     <div class="section-title">Today</div>
+    <div style="padding:0 var(--space-5) var(--space-3);">
+      <div class="prompt-card" style="margin-bottom:0; border:2px solid var(--accent-deep);">
+        <div class="prompt-label" id="dayProgramLabel">Day 1 Program</div>
+        <div class="prompt-text" id="dayProgramTask">Loading...</div>
+        <button class="habit-check" id="dayProgramCheck" onclick="toggleDayProgram()" style="width:36px; height:36px;"></button>
+        <span style="font-size:12.5px; color:var(--text-soft); margin-left:8px;">Mark today's program done</span>
+      </div>
+    </div>
     <div class="card-grid">
       <button class="feature-card" onclick="openPanel('promptPanel')">
         <div class="fc-icon">📝</div>
@@ -454,6 +476,11 @@ button{font-family:var(--font-body); cursor:pointer;}
         <div class="fc-icon">🏆</div>
         <div class="fc-title">Milestones</div>
         <div class="fc-sub" id="milestoneSummary">0 unlocked</div>
+      </button>
+      <button class="feature-card wide" onclick="openPanel('historyPanel')">
+        <div class="fc-icon">📊</div>
+        <div class="fc-title">History & Progress</div>
+        <div class="fc-sub">Every chart, every stat, all in one place</div>
       </button>
       <button class="feature-card" onclick="openPanel('helpPanel')">
         <div class="fc-icon">📖</div>
@@ -606,6 +633,13 @@ button{font-family:var(--font-body); cursor:pointer;}
     </div>
   </div>
 
+  <div class="panel-overlay hidden" id="overlay-historyPanel">
+    <div class="panel">
+      <div class="panel-head"><h2 style="font-size:20px;">History & Progress</h2><button class="panel-close" onclick="closePanel('historyPanel')">✕</button></div>
+      <div id="historyContent"></div>
+    </div>
+  </div>
+
   <div class="panel-overlay hidden" id="overlay-helpPanel">
     <div class="panel">
       <div class="panel-head"><h2 style="font-size:20px;">Help Guide</h2><button class="panel-close" onclick="closePanel('helpPanel')">✕</button></div>
@@ -622,6 +656,8 @@ button{font-family:var(--font-body); cursor:pointer;}
       <div class="help-item"><h3>💗 Self Care Checklist</h3><p>A simple daily list of ways to care for yourself. Check off what you did today.</p></div>
       <div class="help-item"><h3>📅 Weekly Review</h3><p>Once a week, look back and write about what went well, what was hard, and what you want to do differently. This helps you learn from each week instead of just moving past it.</p></div>
       <div class="help-item"><h3>🏆 Milestones</h3><p>Every 10 days you show up and use the app, you unlock a new milestone. This is a way to see your consistency build over time.</p></div>
+      <div class="help-item"><h3>📅 Today's Program</h3><p>This is your real Day 1 to Day 90 plan. Every single day has its own task, made just for that day, building from small steps in the beginning to a much bigger challenge by the end. Check it off when you finish it.</p></div>
+      <div class="help-item"><h3>📊 History & Progress</h3><p>This is where you see everything you have done in the app, all in one place. Charts show your habit consistency, your mood over time, which challenge categories you use most, and a full 90 day map of every day you showed up.</p></div>
     </div>
   </div>
 
@@ -673,14 +709,16 @@ const CBT_PROMPTS = [
   "Where did you show up for yourself today, even in a small way?"
 ];
 const AFFIRMATIONS = [
-  "I am becoming stronger every day.",
+  "I am strong.",
   "I keep my promises to myself.",
   "I am allowed to take up space.",
   "My past does not decide my future.",
   "I am proud of how far I have already come.",
   "I choose myself today.",
   "Small steps are still steps forward.",
-  "I am worthy of the life I am building."
+  "I am worthy of the life I am building.",
+  "I am enough, exactly as I am today.",
+  "I have what it takes."
 ];
 const CHALLENGE_CATEGORIES = [
   { id:'learn', name:'Learn & Read', icon:'📚', items:[
@@ -716,14 +754,117 @@ const CHALLENGE_CATEGORIES = [
 ];
 const SELFCARE_ITEMS = ['Drank enough water','Ate a nourishing meal','Moved my body','Got fresh air','Took a break from my phone','Said something kind to myself','Went to bed at a good time'];
 
+// The actual 90 day curriculum. Days 1-30 build real habits and land a major
+// change by Day 30. Days 31-60 rewire mindset under real pressure. Days 61-90
+// is the hardest phase, full transformation and integration.
+const DAY_TASKS = [
+/*1*/"Look at your life honestly. Write down 3 habits that are holding you back.",
+/*2*/"Clean and reset one space in your home. A clear space, a clearer mind.",
+/*3*/"Pick a wake up time for the next 90 days and start it today.",
+/*4*/"Cut one small unnecessary expense today. Notice how it feels.",
+/*5*/"Drink water first thing this morning, before your phone.",
+/*6*/"Write your Future Her letter if you have not already. This is for Day 90.",
+/*7*/"Rest today. Look back at this week. What felt hardest, and why?",
+/*8*/"Pick your top 3 habits from your Habit Tracker. Commit to them starting today.",
+/*9*/"Remove one thing from your space that keeps you stuck in old patterns.",
+/*10*/"Say no to one thing today that drains you. Just one.",
+/*11*/"Read 10 pages of a growth book.",
+/*12*/"Move your body for 20 minutes, any way that feels good.",
+/*13*/"Track every dollar you spend today, no judgment, just awareness.",
+/*14*/"Review your week. Which habit felt easiest? Which felt hardest?",
+/*15*/"Write the story you tell yourself about why you stay stuck.",
+/*16*/"Write the opposite of that story. Read it out loud to yourself.",
+/*17*/"Do one hard thing before noon today.",
+/*18*/"Set one boundary today, even if it's quiet and just for yourself.",
+/*19*/"Unfollow one account that makes you compare your life to someone else's.",
+/*20*/"Stand in the mirror and say one kind, true thing to yourself.",
+/*21*/"Review your week. Name one way your mindset already feels different.",
+/*22*/"Name the one habit you are ready to fully let go of. Write it down.",
+/*23*/"Remove every trigger for that habit from your day, as much as you can.",
+/*24*/"Replace that habit today with something better. Pick one from Dump and Replace.",
+/*25*/"Tell someone you trust about the change you are making. Say it out loud.",
+/*26*/"Write your identity statement: I am someone who ___. Fill in the blank.",
+/*27*/"Live one full day exactly as that identity statement describes.",
+/*28*/"Do the hardest challenge on your list today. Don't overthink it, just start.",
+/*29*/"Look back at Day 1. Write down what has actually changed since then.",
+/*30*/"MAJOR MILESTONE. Your first 30 days are complete. Write what you're proud of.",
+/*31*/"Recommit to the identity you claimed on Day 26. Read it again.",
+/*32*/"Go a full day without complaining, not even once.",
+/*33*/"Catch one hard thought today and reframe it into something kinder and truer.",
+/*34*/"Move your body in a way that feels good, not like punishment.",
+/*35*/"Write 3 things you did right today, no matter how small.",
+/*36*/"Set a boundary with someone today, out loud this time.",
+/*37*/"Review your week. Are your new habits starting to feel automatic yet?",
+/*38*/"Do your hardest habit today, even though it's your busiest day this week.",
+/*39*/"Say yes to something today that scares you a little.",
+/*40*/"Sit with a hard emotion for 5 minutes without distracting yourself from it.",
+/*41*/"Have the honest conversation you've been avoiding.",
+/*42*/"Skip the comfort habit you usually lean on when things get hard.",
+/*43*/"Take a full self care day today. No guilt about it.",
+/*44*/"Review your week. Where did you almost quit, and what kept you going?",
+/*45*/"Write a letter to the woman you were on Day 1.",
+/*46*/"Read about a woman you admire. Write down one trait you want to build.",
+/*47*/"Try one brand new skill for 15 minutes today.",
+/*48*/"Plan next week around your goals, not just your mood.",
+/*49*/"Fix one small thing you've been avoiding for weeks.",
+/*50*/"Practice standing tall and noticing your posture, all day today.",
+/*51*/"Review your week. Halfway through this phase, what feels different now?",
+/*52*/"Revisit your Future Her letter. Are you becoming her yet?",
+/*53*/"Do a full money check in. Income, spending, and one goal.",
+/*54*/"Reach out to someone who genuinely lifts you up.",
+/*55*/"Forgive yourself for one thing you've been holding onto.",
+/*56*/"Complete your top 3 habits today, all of them, without missing one.",
+/*57*/"Take a photo of yourself today. Just for you, no one else.",
+/*58*/"Rest fully today. Actually rest, without feeling guilty about it.",
+/*59*/"Write down what you want the next 30 days to build toward.",
+/*60*/"MAJOR MILESTONE. Phase 2 is complete. Write how your mindset has changed since Day 1.",
+/*61*/"Raise the bar on your hardest habit. Add more time, more reps, more effort.",
+/*62*/"Do one hard thing today before 8am.",
+/*63*/"Say no to something bigger than you would have a month ago.",
+/*64*/"Write your goals for the next year, not just the next month.",
+/*65*/"Take one real, concrete step toward a long term goal today.",
+/*66*/"Practice a confident habit in public today. Eye contact. A steady voice.",
+/*67*/"Review your week. What did you just do that old you never would have?",
+/*68*/"Go a full day with zero unnecessary scrolling.",
+/*69*/"Do your habits today even though you're tired, busy, or don't feel like it.",
+/*70*/"Sit with discomfort today instead of numbing it.",
+/*71*/"Have the hard conversation you've been putting off.",
+/*72*/"Push through a moment today that you would have quit on before.",
+/*73*/"Do something today that only the woman you're becoming would do.",
+/*74*/"Review your week. This week was supposed to be hard. Was it?",
+/*75*/"Live a full day exactly as your Day 26 identity statement describes.",
+/*76*/"Do a full digital declutter. Unfollow, unsubscribe, clean it all up.",
+/*77*/"Write about the moment so far that changed you the most.",
+/*78*/"Complete your hardest challenge from every category today.",
+/*79*/"Spend real time with someone who matters. No phones.",
+/*80*/"Plan a small celebration for Day 90. You're going to earn it.",
+/*81*/"Review your week. You are almost there.",
+/*82*/"Write down every habit that now feels automatic, without even thinking.",
+/*83*/"Write down every belief you've dropped since Day 1.",
+/*84*/"Do a full self audit. Body, mind, money, relationships, purpose.",
+/*85*/"Thank yourself, out loud, for not quitting.",
+/*86*/"Do one thing today that used to feel impossible for you.",
+/*87*/"Prepare yourself. In a few days, you'll read your Future Her letter.",
+/*88*/"Review your week. What does the next chapter of your life look like?",
+/*89*/"Write a letter to yourself, six months from today.",
+/*90*/"Read your Future Her letter from Day 1. Look how far you've come. This is who you are now."
+];
+
 const IDENTITY_STATEMENTS = [
-  "I am becoming a woman who keeps her promises to herself.",
-  "I am becoming a woman who chooses herself first.",
-  "I am becoming a woman who is proud of small wins.",
-  "I am becoming a woman who speaks to herself with kindness.",
-  "I am becoming a woman who finishes what she starts.",
-  "I am becoming a woman who protects her peace.",
-  "I am becoming a woman who trusts herself."
+  "I am a woman who keeps her promises to herself.",
+  "I am a woman who chooses herself first.",
+  "I am proud of my small wins.",
+  "I speak to myself with kindness.",
+  "I am a woman who finishes what she starts.",
+  "I protect my peace.",
+  "I trust myself.",
+  "I am disciplined, even on hard days.",
+  "I have everything I need to keep going.",
+  "I am worthy of the life I am building.",
+  "I am consistent.",
+  "I am not who I used to be.",
+  "I have the power to change my story.",
+  "I am strong enough to do hard things."
 ];
 
 /* ============ STORAGE HELPERS ============ */
@@ -887,6 +1028,7 @@ function startApp(){
   renderVision();
   renderSelfcare();
   renderMilestones();
+  renderDayProgram();
   loadGratitude();
 
   if(day >= 90){
@@ -918,6 +1060,7 @@ function wrapPanelContent(id){
 }
 function openPanel(id){
   document.getElementById('overlay-'+id).classList.remove('hidden');
+  if(id === 'historyPanel') renderHistoryPanel();
   if(!FREE_PANELS.includes(id)){
     wrapPanelContent(id);
     const unlocked = store.get('unlocked', false);
@@ -1334,6 +1477,163 @@ function renderMilestones(){
     list.appendChild(row);
   });
   document.getElementById('milestoneSummary').textContent = unlocked + ' of 10 unlocked';
+}
+
+/* ============ DAY PROGRAM (Day 1 to 90 curriculum) ============ */
+function renderDayProgram(){
+  const day = dayNumber();
+  const task = DAY_TASKS[day-1] || DAY_TASKS[DAY_TASKS.length-1];
+  document.getElementById('dayProgramLabel').textContent = 'Day ' + day + ' Program';
+  document.getElementById('dayProgramTask').textContent = task;
+  const log = store.get('dayProgramLog', {});
+  const done = !!log[todayKey()];
+  const check = document.getElementById('dayProgramCheck');
+  check.classList.toggle('done', done);
+  check.textContent = done ? '✓' : '';
+}
+function toggleDayProgram(){
+  const log = store.get('dayProgramLog', {});
+  const key = todayKey();
+  log[key] = !log[key];
+  store.set('dayProgramLog', log);
+  renderDayProgram();
+}
+
+/* ============ DONUT CHART HELPER ============ */
+function buildDonut(segments, centerText, title){
+  const total = segments.reduce((s,seg)=>s+seg.value,0);
+  const stops = total > 0
+    ? (function(){ let acc=0; return segments.map(seg=>{ const start=(acc/total)*100; acc+=seg.value; const end=(acc/total)*100; return seg.color+' '+start+'% '+end+'%'; }).join(', '); })()
+    : 'var(--border) 0% 100%';
+  const block = document.createElement('div');
+  block.className = 'donut-block';
+  const legendHtml = segments.map(seg=>`<div class="donut-legend-item"><span class="donut-legend-dot" style="background:${seg.color};"></span><span>${seg.label}: ${seg.value}</span></div>`).join('');
+  block.innerHTML = `
+    <div class="donut-title">${title}</div>
+    <div class="donut-wrap"><div class="donut" style="background:conic-gradient(${stops});"></div><div class="donut-label">${centerText}</div></div>
+    <div class="donut-legend">${legendHtml}</div>
+  `;
+  return block;
+}
+
+/* ============ HISTORY & PROGRESS (everything in the app, in one place) ============ */
+function renderHistoryPanel(){
+  const el = document.getElementById('historyContent');
+  el.innerHTML = '';
+  const day = dayNumber();
+
+  // gather every log source in the app
+  const habits = store.get('habits', []);
+  const habitLog = store.get('habitLog', {});
+  const moods = store.get('moods', {});
+  const journal = store.get('journal', {});
+  const identityLog = store.get('identityLog', {});
+  const gratitude = store.get('gratitude', {});
+  const selfcareLog = store.get('selfcareLog', {});
+  const challengeLog = store.get('challengeLog', {});
+  const dayProgramLog = store.get('dayProgramLog', {});
+  const reviews = store.get('reviews', []);
+
+  // top stat tiles
+  const activeDays = new Set([
+    ...Object.keys(habitLog).filter(k=>habitLog[k].length>0),
+    ...Object.keys(moods),
+    ...Object.keys(journal),
+    ...Object.keys(identityLog).filter(k=>identityLog[k]),
+    ...Object.keys(gratitude),
+    ...Object.keys(selfcareLog).filter(k=>selfcareLog[k].length>0),
+    ...Object.keys(challengeLog).filter(k=>challengeLog[k].length>0),
+    ...Object.keys(dayProgramLog).filter(k=>dayProgramLog[k])
+  ]);
+  let totalHabitChecks = 0;
+  Object.values(habitLog).forEach(arr=>totalHabitChecks += arr.length);
+  let totalChallengesDone = 0;
+  Object.values(challengeLog).forEach(arr=>totalChallengesDone += arr.length);
+  let dayProgramDone = 0;
+  Object.values(dayProgramLog).forEach(v=>{ if(v) dayProgramDone++; });
+
+  const stats = document.createElement('div');
+  stats.className = 'overview-grid';
+  stats.innerHTML = `
+    <div class="overview-stat"><div class="num">${activeDays.size}</div><div class="label">Active Days</div></div>
+    <div class="overview-stat"><div class="num">Day ${day}</div><div class="label">Of 90</div></div>
+    <div class="overview-stat"><div class="num">${totalHabitChecks}</div><div class="label">Habit Check-ins</div></div>
+    <div class="overview-stat"><div class="num">${dayProgramDone}/${day}</div><div class="label">Program Days Done</div></div>
+  `;
+  el.appendChild(stats);
+
+  // Donut 1: Day Program completion (curriculum)
+  const donutRow1 = document.createElement('div');
+  donutRow1.className = 'donut-row';
+  donutRow1.appendChild(buildDonut(
+    [ {value:dayProgramDone, color:'var(--accent-deep)', label:'Done'}, {value:Math.max(0,day-dayProgramDone), color:'var(--border)', label:'Missed'} ],
+    Math.round((dayProgramDone/Math.max(1,day))*100)+'%', '90 Day Program'
+  ));
+
+  // Donut 2: Habit completion rate
+  const totalPossible = habits.length * day;
+  donutRow1.appendChild(buildDonut(
+    [ {value:totalHabitChecks, color:'var(--success)', label:'Completed'}, {value:Math.max(0,totalPossible-totalHabitChecks), color:'var(--border)', label:'Missed'} ],
+    totalPossible>0 ? Math.round((totalHabitChecks/totalPossible)*100)+'%' : 'No habits yet', 'Habit Consistency'
+  ));
+  el.appendChild(donutRow1);
+
+  // Donut 3: Mood distribution
+  const moodCounts = {1:0,2:0,3:0,4:0,5:0};
+  Object.values(moods).forEach(m=>{ if(moodCounts[m]!==undefined) moodCounts[m]++; });
+  const moodColors = {1:'#C85E5E',2:'#E3A857',3:'#D9CB9B',4:'#8FBF9F',5:'#5FADD1'};
+  const moodLabels = {1:'Low',2:'Rough',3:'Okay',4:'Good',5:'Great'};
+  const donutRow2 = document.createElement('div');
+  donutRow2.className = 'donut-row';
+  donutRow2.appendChild(buildDonut(
+    Object.keys(moodCounts).map(k=>({value:moodCounts[k], color:moodColors[k], label:moodLabels[k]})),
+    Object.values(moods).length + ' logs', 'Mood Over Time'
+  ));
+
+  // Donut 4: Challenge category engagement
+  const catColors = ['#E88AA3','#A688D6','#E8B84B','#5FADD1','#8FBF9F','#C99420','#C85E7C','#7E5CB8','#3C87AB','#D97A97'];
+  const catCounts = {};
+  CHALLENGE_CATEGORIES.forEach(c=>catCounts[c.id]=0);
+  Object.values(challengeLog).forEach(arr=>{
+    arr.forEach(itemId=>{ const catId = itemId.split('-')[0]; if(catCounts[catId]!==undefined) catCounts[catId]++; });
+  });
+  const catSegments = CHALLENGE_CATEGORIES.map((c,i)=>({value:catCounts[c.id], color:catColors[i%catColors.length], label:c.name}));
+  donutRow2.appendChild(buildDonut(catSegments, totalChallengesDone + ' done', 'Challenge Categories'));
+  el.appendChild(donutRow2);
+
+  // Full 90 day activity heatmap
+  const heatTitle = document.createElement('div');
+  heatTitle.className = 'prompt-label';
+  heatTitle.textContent = 'Full 90 Day Activity';
+  el.appendChild(heatTitle);
+  const heat = document.createElement('div');
+  heat.className = 'history-full-heat';
+  const start = store.get('startDate', todayKey());
+  for(let i=0;i<90;i++){
+    const d = new Date(start); d.setDate(d.getDate()+i);
+    const key = d.toISOString().slice(0,10);
+    const isActive = activeDays.has(key);
+    const cell = document.createElement('div');
+    cell.className = 'history-cell' + (isActive ? ' hit' : '');
+    cell.style.width = '100%';
+    heat.appendChild(cell);
+  }
+  el.appendChild(heat);
+
+  // Weekly reviews history
+  if(reviews.length > 0){
+    const revTitle = document.createElement('div');
+    revTitle.className = 'prompt-label';
+    revTitle.style.marginTop = 'var(--space-4)';
+    revTitle.textContent = 'Weekly Reviews (' + reviews.length + ')';
+    el.appendChild(revTitle);
+    reviews.slice().reverse().slice(0,5).forEach(r=>{
+      const card = document.createElement('div');
+      card.className = 'prompt-card';
+      card.innerHTML = `<div class="prompt-label">${r.date}</div><div style="font-size:13px;"><b>Went well:</b> ${r.well || '—'}</div>`;
+      el.appendChild(card);
+    });
+  }
 }
 
 /* ============ INIT ============ */
